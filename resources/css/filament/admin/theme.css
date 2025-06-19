@@ -1,0 +1,70 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+/* 
+.fi-simple-layout {
+    background-image: url('../../../../public/images/bg-login.jpg') !important;
+} */
+
+.fi-sidebar::-webkit-scrollbar {
+    display: none;
+}
+.fi-sidebar {
+    @apply bg-blue-800 text-white;
+    /* scrollbar-width: 0; */
+}
+.fi-sidebar-group-label, .fi-sidebar-item-label, .fi-sidebar-item-icon {
+    color: white !important;
+}
+.fi-sidebar-item-active .fi-sidebar-item-button {
+    @apply bg-blue-500;
+}
+.fi-sidebar-item-button:hover {
+    @apply bg-blue-500;
+}
+/* Styling kustom untuk Top Bar (Header) */
+.fi-topbar nav {
+    @apply bg-blue-900;
+}
+ 
+.fi-sidebar-header {
+    @apply bg-blue-900 text-white;
+}
+
+/* --- PERBAIKAN UNTUK KARTU STAT OVERVIEW --- */
+/* Untuk browser modern yang mendukung :has() */
+.fi-wi-stats-overview-stat:has(.fi-color-danger) {
+    @apply bg-red-600 text-white;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-success) {
+    @apply bg-green-600 text-white;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-warning) {
+    @apply bg-yellow-500 text-gray-900;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-info) {
+    @apply bg-blue-600 text-white;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-primary) {
+    @apply bg-indigo-600 text-white;
+}
+/* Pastikan teks tetap terbaca */
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-value,
+.fi-wi-stats-overview-stat-icon,
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-label {
+    @apply text-white;
+}
+.fi-wi-stats-overview-stat-description {
+    @apply text-white;
+    
+}
+/* .fi-wi-widget .fi-section-content-ctn {
+    @apply bg-blue-800;
+    overflow: hidden;
+    @apply text-white;
+
+} */
