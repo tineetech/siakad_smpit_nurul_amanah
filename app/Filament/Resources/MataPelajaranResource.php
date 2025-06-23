@@ -18,6 +18,7 @@ class MataPelajaranResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Data Master';
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {

@@ -22,7 +22,8 @@ class GuruResource extends Resource
     protected static ?string $model = Guru::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap'; // Ikon topi akademik
-    protected static ?string $navigationGroup = 'Data Master'; // Kelompokkan di sidebar
+    protected static ?string $navigationGroup = 'Data Master';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

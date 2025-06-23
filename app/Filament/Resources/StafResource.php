@@ -20,8 +20,9 @@ class StafResource extends Resource
 {
     protected static ?string $model = Staf::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group'; // Ikon grup pengguna
-    protected static ?string $navigationGroup = 'Data Master'; // Kelompokkan di sidebar
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationGroup = 'Data Master';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

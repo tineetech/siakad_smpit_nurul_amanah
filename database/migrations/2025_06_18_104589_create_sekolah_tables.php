@@ -52,10 +52,22 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('enrollment', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama')->nullable();
+            $table->foreignId('kelas_id')->nullable()->unique()->constrained('kelas')->onDelete('cascade');
+            $table->foreignId('siswa_id')->nullable()->unique()->constrained('siswa')->onDelete('cascade');
+            $table->foreignId('guru_id')->nullable()->constrained('guru')->onDelete('cascade');
+            $table->foreignId('semester_id')->nullable()->unique()->constrained('semester')->onDelete('cascade');
+            $table->foreignId('kurikulum_id')->nullable()->unique()->constrained('kurikulum')->onDelete('cascade');
+            $table->timestamps();
+        });
+
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
             $table->string('nama')->unique(); // e.g., 'X IPA 1', 'XI IPS 2'
-            $table->string('tingkat')->nullable(); // e.g., 'X', 'XI', 'XII'
+            $table->foreignId('guru_id')->nullable()->unique()->constrained('siswa')->onDelete('cascade');
+            $table->string('tingkat')->nullable();
             $table->integer('kapasitas')->default(35)->nullable();
             $table->timestamps();
         });

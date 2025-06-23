@@ -12,36 +12,30 @@ class Siswa extends Model
     protected $table = 'siswa';
 
     protected $fillable = [
-        'user_id',
-        'nisn',
-        'nis',
-        'nama_lengkap',
-        'jenis_kelamin',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'agama',
-        'nama_ayah',
-        'nama_ibu',
-        'nomor_telepon_orang_tua',
-        'qr_code_data',
-        'status',
-        'kelas_id',
-    ];
-    
-    protected $casts = [
-        'tanggal_lahir' => 'date', // Ini yang penting untuk error Anda
-        'created_at' => 'datetime', // Ini juga untuk created_at di export
+        'user_id', 'nisn', 'nis', 'nama_lengkap', 'jenis_kelamin', 'tempat_lahir',
+        'tanggal_lahir', 'agama', 'nama_ayah', 'nama_ibu', 'nomor_telepon_orang_tua',
+        'qr_code_data', 'status', 'kelas_id',
     ];
 
-    // Relasi ke model User (jika ada)
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi ke model Kelas
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);
+    }
+
+    // Relasi ke Enrollment (siswa dapat memiliki banyak enrollment)
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
     }
 }

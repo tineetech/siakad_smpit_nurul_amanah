@@ -57,6 +57,12 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->navigationGroups([
+                'Data Master',        // Ini akan muncul pertama
+                'Kesiswaan', // Ini akan muncul kedua
+                'POS SPP',       // Ini akan muncul ketiga
+                'Pengaturan',            // Ini akan muncul terakhir
+            ])
             ->defaultThemeMode(ThemeMode::Light)
             ->darkMode(false)
             ->authMiddleware([
