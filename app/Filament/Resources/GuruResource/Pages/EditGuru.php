@@ -10,10 +10,9 @@ class EditGuru extends EditRecord
 {
     protected static string $resource = GuruResource::class;
 
-    protected function getHeaderActions(): array
+    protected function afterSave(): void
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        // Update user for the guru
+        GuruResource::createUserForGuru($this->record);
     }
 }

@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class StafResource extends Resource
 {
@@ -123,7 +126,7 @@ class StafResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'aktif' => 'success',
                         'non-aktif' => 'warning',
                     })
@@ -192,5 +195,59 @@ class StafResource extends Resource
             'create' => Pages\CreateStaf::route('/create'),
             'edit' => Pages\EditStaf::route('/{record}/edit'),
         ];
+    }
+
+    // Role permission logic tetap kamu pakai:
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
     }
 }

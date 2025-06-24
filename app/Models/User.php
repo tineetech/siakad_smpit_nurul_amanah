@@ -60,7 +60,7 @@ class User extends Authenticatable
     public function isStaffPpdb()
     {
         return $this->role === self::ROLE_STAFF_PPDB;
-    }
+    }   
 
     public function isStaff()
     {

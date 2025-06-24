@@ -13,7 +13,7 @@ use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ListPengumumen extends ListRecords
+class ListPengumuman extends ListRecords
 {
     protected static string $resource = PengumumanResource::class;
 

@@ -3,10 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\Auth\CustomLogin;
-use App\Filament\Navigation\AdminNavigation;
-use App\Filament\Navigation\StudentNavigation;
-use App\Filament\Navigation\TeacherNavigation;
-use App\Filament\Navigation\StaffNavigation;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -23,8 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Illuminate\Support\Facades\Auth;
-use Filament\Navigation\NavigationItem;
+// use App\Filament\Pages\AbsensiSiswa;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -46,6 +41,11 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                 \App\Filament\Pages\AbsensiSiswa::class,
+                 \App\Filament\Pages\AbsensiGuru::class,
+                 \App\Filament\Pages\QrCodeGuru::class,
+                 \App\Filament\Pages\ScanAbsensiGuru::class,
+                 
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -63,58 +63,6 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->navigationGroups([
-                'Data Master',
-                'Kesiswaan',
-                'POS SPP',
-                'Pengaturan',
-            ])
-            ->navigation(function () {
-                /** @var \App\Models\User $user */
-                $user = Auth::user();
-                
-                if (!$user) {
-                    return [];
-                }
-
-                $dashboardItem = NavigationItem::make('Dashboard')
-                    ->icon('heroicon-o-home')
-                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.pages.dashboard'))
-                    ->url(route('filament.admin.pages.dashboard'));
-
-                $profileItem = NavigationItem::make('Profil')
-                    ->icon('heroicon-o-user')
-                    ->url('#')
-                    ->group('Pengaturan');
-
-                $navigationItems = [$dashboardItem];
-
-                if ($user->isAdmin()) {
-                    $navigationItems = array_merge(
-                        $navigationItems,
-                        (new AdminNavigation())->items()
-                    );
-                } elseif ($user->isGuru()) {
-                    $navigationItems = array_merge(
-                        $navigationItems,
-                        (new TeacherNavigation())->items()
-                    );
-                } elseif ($user->isSiswa()) {
-                    $navigationItems = array_merge(
-                        $navigationItems,
-                        (new StudentNavigation())->items()
-                    );
-                } elseif ($user->isTataUsaha()) {
-                    $navigationItems = array_merge(
-                        $navigationItems,
-                        (new StaffNavigation())->items()
-                    );
-                }
-
-                $navigationItems[] = $profileItem;
-
-                return $navigationItems;
-            })
             ->defaultThemeMode(ThemeMode::Light)
             ->darkMode(false)
             ->authMiddleware([
