@@ -63,7 +63,8 @@ class AdminPanelProvider extends PanelProvider
                 'Data Master',        // Ini akan muncul pertama
                 'Kesiswaan', // Ini akan muncul kedua
                 'POS SPP',       // Ini akan muncul ketiga
-                'Pengaturan',            // Ini akan muncul terakhir
+                'Portal PPDB',
+                'Pengaturan',
             ])
             ->defaultThemeMode(ThemeMode::Light)
             ->darkMode(false)
