@@ -93,7 +93,7 @@ class KelasResource extends Resource
                                 // Untuk record baru, ini akan kosong
                                 // Untuk record yang diedit, mutateFormDataBeforeFill akan mengisi ini
                                 if (!$get('selected_semester_id') || !$get('selected_kurikulum_id')) return [];
-                                return [];
+                                // return [];
                             }),
                     ])
                     ->columns(2),

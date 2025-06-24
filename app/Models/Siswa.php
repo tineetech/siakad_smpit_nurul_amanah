@@ -14,7 +14,7 @@ class Siswa extends Model
     protected $fillable = [
         'user_id', 'nisn', 'nis', 'nama_lengkap', 'jenis_kelamin', 'tempat_lahir',
         'tanggal_lahir', 'agama', 'nama_ayah', 'nama_ibu', 'nomor_telepon_orang_tua',
-        'qr_code_data', 'status', 'kelas_id',
+        'qr_code_data', 'status',
     ];
 
     protected $casts = [
@@ -28,10 +28,10 @@ class Siswa extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class);
-    }
+    // public function kelas()
+    // {
+    //     return $this->belongsTo(Kelas::class);
+    // }
 
     // Relasi ke Enrollment (siswa dapat memiliki banyak enrollment)
     public function enrollments()
