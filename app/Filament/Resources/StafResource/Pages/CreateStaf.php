@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateStaf extends CreateRecord
 {
     protected static string $resource = StafResource::class;
+    
+    protected function afterCreate(): void
+    {
+        // Create user for the new guru
+        StafResource::createUserForStaf($this->record);
+    }
 }

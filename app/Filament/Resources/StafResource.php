@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class StafResource extends Resource
 {
@@ -46,7 +47,6 @@ class StafResource extends Resource
                     ->options([
                         'tata usaha' => 'Tata Usaha',
                         'kepala sekolah' => 'Kepala Sekolah',
-                        'administrasi' => 'Administrasi',
                         'panitia ppdb' => 'Panitia PPDB',
                         // Tambahkan jabatan lain jika diperlukan
                     ])
@@ -235,13 +235,13 @@ class StafResource extends Resource
                 'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_GURU => [
-                'viewAny' => true,
+                'viewAny' => false,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,
@@ -249,5 +249,44 @@ class StafResource extends Resource
         ];
 
         return $rolePermissions[$user->role][$action] ?? false;
+    }
+    
+    // Handle user creation when staff is created or updated
+    public static function createUserForStaf(Staf $staff): void
+    {
+        $namaLengkapBersih = strtolower(str_replace(' ', '', $staff->nama_lengkap));
+        $email = $namaLengkapBersih . '@gmail.com';
+        // $email = $staff->nip . '@gmail.com';
+        // $password = "$staff->nip";
+        $password = "staff123";
+
+        $role = null;
+        switch ($staff->jabatan) {
+            case 'tata usaha':
+                $role = User::ROLE_TATA_USAHA;
+                break;
+            case 'panitia ppdb':
+                $role = User::ROLE_STAFF_PPDB;
+                break;
+            case 'kepala sekolah':
+                $role = User::ROLE_KEPSEK;
+                break;
+            default:
+                $role = User::ROLE_STAFF;
+                break;
+        }
+
+        $user = User::updateOrCreate(
+            ['email' => $email],
+            [
+                'name' => $staff->nama_lengkap,
+                'password' => Hash::make($password),
+                'role' => $role,
+            ]
+        );
+
+        // Update the guru record with the user_id
+        $staff->user_id = $user->id;
+        $staff->save();
     }
 }

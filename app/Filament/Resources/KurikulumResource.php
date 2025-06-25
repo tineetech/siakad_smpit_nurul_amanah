@@ -128,13 +128,13 @@ class KurikulumResource extends Resource
                 'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_GURU => [
-                'viewAny' => true,
+                'viewAny' => false,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

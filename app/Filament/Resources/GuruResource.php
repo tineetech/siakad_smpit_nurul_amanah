@@ -238,8 +238,11 @@ class GuruResource extends Resource
     // Handle user creation when guru is created or updated
     public static function createUserForGuru(Guru $guru): void
     {
-        $email = $guru->nip . '@gmail.com';
-        $password = $guru->nip;
+        $namaLengkapBersih = strtolower(str_replace(' ', '', $guru->nama_lengkap));
+        $email = $namaLengkapBersih . '@gmail.com';
+        // $email = $guru->nip . '@gmail.com';
+        // $password = "$guru->nip";
+        $password = "guru123";
 
         $user = User::updateOrCreate(
             ['email' => $email],

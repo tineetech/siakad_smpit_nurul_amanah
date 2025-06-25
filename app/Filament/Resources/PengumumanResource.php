@@ -36,9 +36,11 @@ class PengumumanResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Judul Pengumuman')
+                    ->columnSpanFull()
                     ->placeholder('Masukkan judul pengumuman'),
                 Textarea::make('konten')
                     ->required()
+                    ->columnSpanFull()
                     ->rows(5)
                     ->label('Isi Pengumuman')
                     ->placeholder('Tulis isi pengumuman di sini.'),
@@ -129,8 +131,9 @@ class PengumumanResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()->hidden(fn($record) => !static::canEdit($record)),
+                Tables\Actions\DeleteAction::make()->hidden(fn($record) => !static::canEdit($record)),
             ]);
 
         // Hanya tambahkan bulk actions jika bukan siswa atau guru
@@ -159,13 +162,6 @@ class PengumumanResource extends Resource
             'edit' => Pages\EditPengumuman::route('/{record}/edit'),
         ];
     }
-
-    // Mengambil user ID yang memposting (sudah diatur di form, ini redundant tapi bisa jadi fallback)
-    // public static function mutateFormDataBeforeCreate(array $data): array
-    // {
-    //     $data['diposting_oleh_user_id'] = auth()->id();
-    //     return $data;
-    // }
 
     public static function canViewAny(): bool
     {

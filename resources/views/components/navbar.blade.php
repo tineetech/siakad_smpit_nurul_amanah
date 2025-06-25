@@ -50,14 +50,14 @@
         </button> --}}
         
         @if (Auth::check())
-          <a href="{{ '/admin' }}" class="header-action-btn login-btn">
+          <a href="{{ '/siakad' }}" class="header-action-btn login-btn">
             <span class="span">SIAKAD</span>
           </a>
           <a href="{{ '/logout' }}" class="header-action-btn login-btn">
             <span class="span">LOGOUT</span>
           </a>
         @else
-          <a href="{{ '/admin' }}" class="header-action-btn login-btn">
+          <a href="{{ '/siakad' }}" class="header-action-btn login-btn">
             <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
 
             <span class="span">Login / Register</span>

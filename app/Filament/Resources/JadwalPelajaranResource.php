@@ -24,7 +24,7 @@ class JadwalPelajaranResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
-    protected static ?string $navigationGroup = 'Akademik';
+    protected static ?string $navigationGroup = 'Kesiswaan';
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -257,10 +257,10 @@ class JadwalPelajaranResource extends Resource
                 'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_GURU => [
                 'viewAny' => true,

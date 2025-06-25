@@ -24,8 +24,8 @@ class KelasSiswaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Kelas';
     protected static ?string $modelLabel = 'Siswa';
-    protected static ?string $navigationGroup = 'Akademik';
-    
+    protected static ?string $navigationGroup = 'Kesiswaan';
+    protected static ?int $navigationSort = -2;
 
     public static function form(Form $form): Form
     {
