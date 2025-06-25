@@ -15,7 +15,7 @@ Route::prefix('ppdb')->group(function() {
     Route::get('/', [PpdbController::class, 'index'])->name('ppdb.index');
     Route::post('/', [PpdbController::class, 'store'])->name('ppdb.store');
 
-    Route::get('/success', [PpdbController::class, 'indexSuccess'])->name('ppdb.success');
+    Route::get('/success/{nomor_pendaftaran}', [PpdbController::class, 'indexSuccess'])->name('ppdb.success');
 });
 
 Route::get('/api/gelombang', function () {

@@ -67,6 +67,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Data Master',        // Ini akan muncul pertama
                 'Kesiswaan', // Ini akan muncul kedua
+                'Absensi',
                 'POS SPP',       // Ini akan muncul ketiga
                 'Portal PPDB',
                 'Pengaturan',

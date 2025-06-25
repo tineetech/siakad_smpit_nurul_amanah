@@ -299,10 +299,10 @@ class JadwalPelajaranResource extends Resource
 
         $rolePermissions = [
             User::ROLE_ADMIN => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => true,
