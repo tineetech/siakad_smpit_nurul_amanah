@@ -21,11 +21,11 @@
    */
 
   --ultramarine-blue_10: hsla(235, 70%, 60%, 0.1);
-  --ultramarine-blue: hsl(235, 70%, 60%);
+  --ultramarine-blue: #118B50;
   --orange-peel_10: hsla(36, 100%, 55%, 0.1);
   --space-cadet_20: hsla(248, 32%, 23%, 0.2);
   --space-cadet_80: hsla(247, 35%, 19%, 0.8);
-  --space-cadet-2: hsl(247, 35%, 19%);
+  --space-cadet-2: #1F4529;
   --old-lavender: hsl(251, 9%, 46%);
   --orange-peel: hsl(36, 100%, 55%);
   --tart-orange: hsl(0, 100%, 63%);
