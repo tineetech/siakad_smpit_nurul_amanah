@@ -77,7 +77,7 @@
           </li>
 
           <li>
-            <a href="/admin" class="footer-link">
+            <a href="/siakad" class="footer-link">
               <ion-icon name="chevron-forward" aria-hidden="true"></ion-icon>
 
               <span class="span">SIAKAD</span>
@@ -124,7 +124,7 @@
           </li>
 
           <li>
-            <a href="/admin" class="footer-link">
+            <a href="/siakad" class="footer-link">
               <ion-icon name="chevron-forward" aria-hidden="true"></ion-icon>
 
               <span class="span">SIAKAD</span>

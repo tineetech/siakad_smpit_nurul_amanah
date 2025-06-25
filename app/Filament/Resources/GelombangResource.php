@@ -11,6 +11,8 @@ use Filament\Forms\Components\{TextInput, DatePicker, FileUpload, Select};
 use Filament\Tables\Actions;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class GelombangResource extends Resource
 {
@@ -56,5 +58,65 @@ class GelombangResource extends Resource
             'create' => Pages\CreateGelombang::route('/create'),
             'edit' => Pages\EditGelombang::route('/{record}/edit'),
         ];
+    }
+
+    
+    // CUSTOM PERMISSIONS
+
+    public static function canViewAny(): bool
+    {
+        return self::checkPermission('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::checkPermission('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::checkPermission('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::checkPermission('delete');
+    }
+
+    protected static function checkPermission(string $action): bool
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+
+        $permissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_SISWA => [
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $permissions[$user->role][$action] ?? false;
     }
 }

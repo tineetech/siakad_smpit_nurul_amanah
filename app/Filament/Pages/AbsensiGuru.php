@@ -14,7 +14,8 @@ class AbsensiGuru extends Page
     protected static string $view = 'filament.pages.absensi-guru';
     protected static ?string $title = 'QR Absensi';
     protected static ?string $navigationLabel = 'QR Absensi Guru';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Absensi';
+    protected static ?int $navigationSort = 0;
 
     // Use primitive types for Livewire compatibility
     public string $namaLengkap = '';
@@ -23,7 +24,8 @@ class AbsensiGuru extends Page
 
     public static function canAccess(): bool
     {
-        return Auth::user()?->role === User::ROLE_GURU;
+        // return Auth::user()->role === User::ROLE_GURU;
+        return in_array(Auth::user()?->role, ['admin', 'kepala_sekolah']);
     }
 
     public function mount(): void

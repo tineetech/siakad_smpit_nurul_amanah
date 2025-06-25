@@ -102,4 +102,9 @@ class ScanAbsensiSiswa extends Page
             $this->js('window.dispatchEvent(new CustomEvent("absensi-error"));');
         }
     }
+
+    public static function canAccess(): bool
+    {
+        return in_array(Auth::user()?->role, ['admin', 'guru']);
+    }
 }

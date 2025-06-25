@@ -266,9 +266,8 @@ class SiswaResource extends Resource
     // Handle user creation when siswa is created or updated
     public static function createUserForSiswa(Siswa $siswa): void
     {
-        // $email = $siswa->nisn . '@student.com';
         $namaLengkapBersih = strtolower(str_replace(' ', '', $siswa->nama_lengkap));
-        $email = $namaLengkapBersih . '@student.com';
+        $email = $namaLengkapBersih . '@gmail.com';
         // $password = $siswa->nisn;
         $password = "siswa123";
 
