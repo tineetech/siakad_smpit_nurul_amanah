@@ -63,7 +63,7 @@ class ScanAbsensiSiswa extends Page
                 'status_kehadiran' => 'Hadir',
                 'mode_absensi' => 'scan_qr',
                 'pencatat_user_id' => Auth::id(),
-                'qr_code_terscan' => $data['data'],
+                'qr_code_terscan' => $data,
                 'catatan' => null,
             ]);
 
