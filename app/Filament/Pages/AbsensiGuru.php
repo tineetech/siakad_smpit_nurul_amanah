@@ -13,7 +13,7 @@ class AbsensiGuru extends Page
     protected static ?string $navigationIcon = 'heroicon-o-qr-code';
     protected static string $view = 'filament.pages.absensi-guru';
     protected static ?string $title = 'QR Absensi';
-    protected static ?string $navigationLabel = 'QR Absensi Guru';
+    protected static ?string $navigationLabel = 'QR Absensi';
     protected static ?int $navigationSort = 3;
 
     // Use primitive types for Livewire compatibility
@@ -50,7 +50,7 @@ class AbsensiGuru extends Page
     public function getViewData(): array
     {
         return [
-            'nama_lengkap' => $this->namaLengkap,
+            'nama_lengkap' => 'Guru '. $this->namaLengkap,
             'nip' => $this->nip,
             'qrSvg' => $this->qrSvg
         ];
