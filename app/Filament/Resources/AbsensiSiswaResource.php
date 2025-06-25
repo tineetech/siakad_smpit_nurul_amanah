@@ -37,7 +37,8 @@ class AbsensiSiswaResource extends Resource
             Forms\Components\Select::make('siswa_id')
                 ->relationship('siswa', 'nama_lengkap')
                 ->searchable()
-                ->required(),
+                ->required()
+                ->hidden(fn() => Auth::user()->role === User::ROLE_SISWA),
 
             Forms\Components\Select::make('status_kehadiran')
                 ->options([
@@ -54,7 +55,8 @@ class AbsensiSiswaResource extends Resource
                     'lainnya' => 'Lainnya',
                 ])
                 ->required()
-                ->default('manual'),
+                ->default('manual')
+                ->hidden(fn() => Auth::user()->role === User::ROLE_SISWA),
 
             Forms\Components\Textarea::make('catatan')
                 ->columnSpanFull(),
@@ -65,7 +67,6 @@ class AbsensiSiswaResource extends Resource
     {
         return $table
             ->columns([
-
                 Tables\Columns\TextColumn::make('siswa.nama_lengkap')
                     ->label('Siswa')
                     ->searchable()
@@ -80,7 +81,8 @@ class AbsensiSiswaResource extends Resource
 
                 Tables\Columns\TextColumn::make('siswa.kelas.nama')
                     ->label('Kelas')
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->hidden(fn() => Auth::user()->role === User::ROLE_SISWA),
 
                 Tables\Columns\TextColumn::make('status_kehadiran')
                     ->label('Status')
@@ -94,7 +96,8 @@ class AbsensiSiswaResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('mode_absensi')
-                    ->label('Mode'),
+                    ->label('Mode')
+                    ->hidden(fn() => Auth::user()->role === User::ROLE_SISWA),
             ])
             ->filters([
                 SelectFilter::make('kelas')
@@ -160,34 +163,22 @@ class AbsensiSiswaResource extends Resource
         }
 
         if ($user->role === User::ROLE_GURU) {
-            $guru = $user->guru;
-            if ($guru && $guru->kelas_id) {
-                return $query->whereHas('siswa', function ($q) use ($guru) {
-                    $q->where('kelas_id', $guru->kelas_id);
-                });
-            }
-            return $query->whereRaw('1=0');
+            // Guru can see all students' attendance but can filter by class
+            return $query->orderBy('tanggal_absensi', 'desc');
         }
 
         if ($user->role === User::ROLE_SISWA) {
             $siswa = Siswa::where('user_id', $user->id)->first();
             if ($siswa) {
-                // If you want to show only the student's own records:
-                // return $query->where('siswa_id', $siswa->id)
-                //     ->orderBy('tanggal_absensi', 'desc');
-
-                // Current implementation showing classmates:
-                return $query->whereHas('siswa', function ($q) use ($siswa) {
-                    $q->where('kelas_id', $siswa->kelas_id);
-                })->orderBy('tanggal_absensi', 'desc');
+                // Show only the student's own attendance records
+                return $query->where('siswa_id', $siswa->id)
+                    ->orderBy('tanggal_absensi', 'desc');
             }
             return $query->whereRaw('1=0');
         }
 
         return $query->whereRaw('1=0');
     }
-
-
 
     public static function getRelations(): array
     {

@@ -43,7 +43,6 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
                  \App\Filament\Pages\AbsensiSiswa::class,
                  \App\Filament\Pages\AbsensiGuru::class,
-                 \App\Filament\Pages\QrCodeGuru::class,
                  \App\Filament\Pages\ScanAbsensiGuru::class,
                  
             ])

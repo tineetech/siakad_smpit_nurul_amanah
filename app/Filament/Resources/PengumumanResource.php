@@ -16,7 +16,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Notifications\Notification; 
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -61,13 +61,15 @@ class PengumumanResource extends Resource
                     ->label('Tanggal & Waktu Publikasi')
                     ->placeholder('Pilih tanggal dan waktu publikasi'),
                 Forms\Components\Hidden::make('diposting_oleh_user_id')
-                    ->default(fn () => Auth::user()->id),
+                    ->default(fn() => Auth::user()->id),
             ]);
     }
-
     public static function table(Table $table): Table
     {
-        return $table
+        $user = Auth::user();
+        $isSiswaOrGuru = in_array($user->role, [User::ROLE_SISWA, User::ROLE_GURU]);
+
+        $table = $table
             ->columns([
                 Tables\Columns\TextColumn::make('judul')
                     ->searchable()
@@ -118,25 +120,30 @@ class PengumumanResource extends Resource
                         return $query
                             ->when(
                                 $data['published_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '>=', $date),
                             )
                             ->when(
                                 $data['published_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '<=', $date),
                             );
                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
+            ]);
+
+        // Hanya tambahkan bulk actions jika bukan siswa atau guru
+        if (!$isSiswaOrGuru) {
+            $table = $table->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
+        }
 
+        return $table;
+    }
     public static function getRelations(): array
     {
         return [
@@ -208,10 +215,14 @@ class PengumumanResource extends Resource
                 'edit' => false,
                 'delete' => false,
             ],
+            User::ROLE_SISWA => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
         ];
 
         return $rolePermissions[$user->role][$action] ?? false;
     }
-
- 
 }

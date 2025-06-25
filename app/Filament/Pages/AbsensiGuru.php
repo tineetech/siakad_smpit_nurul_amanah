@@ -22,24 +22,30 @@ class AbsensiGuru extends Page
     public string $qrSvg = '';
 
     public static function canAccess(): bool
-{
-    return Auth::user()?->role === User::ROLE_GURU;
-}
+    {
+        return Auth::user()?->role === User::ROLE_GURU;
+    }
 
     public function mount(): void
     {
         $guru = Guru::where('user_id', Auth::id())->firstOrFail();
-        
+
         $this->namaLengkap = $guru->nama_lengkap;
         $this->nip = $guru->nip;
-        
+
+        // Tambahkan hash dan type agar validasi backend cocok
+        $hash = md5($guru->id . config('app.key'));
+
         $qrData = json_encode([
+            'type' => 'guru',
             'guru_id' => $guru->id,
-            'timestamp' => now()->toDateTimeString()
+            'hash' => $hash,
+            'timestamp' => now()->toDateTimeString()  // opsional saja, boleh ada boleh tidak
         ]);
-        
+
         $this->qrSvg = QrCode::size(200)->generate($qrData);
     }
+
 
     public function getViewData(): array
     {

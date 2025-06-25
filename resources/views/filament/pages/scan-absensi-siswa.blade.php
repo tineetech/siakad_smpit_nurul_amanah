@@ -1,12 +1,10 @@
 <x-filament-panels::page>
     <x-filament::card>
         <div class="text-center" x-data @qr-scanned.window="Livewire.dispatch('processQR', { data: event.detail });">
-            <h2 class="text-xl font-bold mb-4">Scan Absensi Guru</h2>
+            <h2 class="text-xl font-bold mb-4">Scan Absensi Siswa</h2>
 
-            <!-- Kamera -->
             <div id="reader" style="width:300px; height:300px; margin: 0 auto; display:none;"></div>
 
-            <!-- Tombol kontrol kamera -->
             <div class="mb-4">
                 <button id="camera-button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 w-full">
                     Aktifkan Kamera
@@ -16,7 +14,6 @@
                 </button>
             </div>
 
-            <!-- Upload file gambar QR -->
             <div id="file-section" class="mt-4">
                 <p class="text-sm text-gray-600 mb-2">Atau upload gambar QR Code:</p>
                 <input type="file" id="file-input" accept="image/*" class="hidden">
@@ -27,7 +24,7 @@
             </div>
 
             <p class="text-sm text-gray-600 mt-4">
-                Arahkan kamera ke QR code guru atau upload gambar QR code untuk absensi
+                Arahkan kamera ke QR code siswa atau upload gambar QR code untuk absensi
             </p>
         </div>
     </x-filament::card>
@@ -39,22 +36,17 @@
         let html5QrCode;
         let isScanning = false;
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const cameraButton = document.getElementById('camera-button');
             const stopButton = document.getElementById('stop-button');
             const reader = document.getElementById('reader');
 
-            cameraButton.addEventListener('click', function () {
+            cameraButton.addEventListener('click', function() {
                 if (isScanning) return;
-
                 html5QrCode = new Html5Qrcode("reader");
                 reader.style.display = 'block';
-
-                html5QrCode.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 250, height: 250 } },
-                    onScanSuccess,
-                    onScanFailure
+                html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
+                    onScanSuccess, onScanFailure
                 ).then(() => {
                     cameraButton.classList.add('hidden');
                     stopButton.classList.remove('hidden');
@@ -64,7 +56,7 @@
                 });
             });
 
-            stopButton.addEventListener('click', function () {
+            stopButton.addEventListener('click', function() {
                 html5QrCode.stop().then(() => {
                     reader.style.display = 'none';
                     cameraButton.classList.remove('hidden');
@@ -80,34 +72,20 @@
                 html5QrCode.stop();
             }
 
-            function onScanFailure(error) {
-                // Kosongkan agar tidak spam error setiap frame
-            }
+            function onScanFailure(error) {}
 
-            document.getElementById('file-input').addEventListener('change', function (e) {
+            document.getElementById('file-input').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-
                 html5QrCode = new Html5Qrcode("reader");
-
                 html5QrCode.scanFile(file, true)
                     .then(decodedText => {
                         window.dispatchEvent(new CustomEvent('qr-scanned', { detail: decodedText }));
                     })
                     .catch(err => {
-                        const errorEl = document.getElementById('file-error');
-                        errorEl.classList.remove('hidden');
-                        errorEl.textContent = 'Gagal membaca QR code: ' + err;
+                        document.getElementById('file-error').classList.remove('hidden');
+                        document.getElementById('file-error').textContent = 'Gagal membaca QR code: ' + err;
                     });
-            });
-
-            // Restart scanning otomatis setelah absensi berhasil
-            window.addEventListener('absensi-recorded', () => {
-                setTimeout(() => {
-                    if (!isScanning) {
-                        cameraButton.click();
-                    }
-                }, 3000);
             });
         });
     </script>

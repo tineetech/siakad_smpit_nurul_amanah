@@ -253,7 +253,7 @@ class SiswaResource extends Resource
                 'delete' => true,
             ],
             User::ROLE_GURU => [
-                'viewAny' => false,
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,
