@@ -27,7 +27,7 @@ class PpdbController extends Controller
 
         $nisnEmpat = substr(preg_replace('/\D/', '', $request->nisn), 0, 4); // hanya ambil angka, 4 digit awal
         $tahun = now()->format('Y');
-        $nomor_pendaftaran = "G{$request->gelombang_id} {$nisnEmpat} {$tahun}";
+        $nomor_pendaftaran = "G{$request->gelombang_id}-{$nisnEmpat}-{$tahun}"; // Using hyphen for readability
 
 
         $calonSiswa = CalonSiswa::create([
@@ -68,11 +68,25 @@ class PpdbController extends Controller
             'tanggal_pendaftaran' => now(),
         ]);
 
-        return view('ppdb.success', compact('calonSiswa'))->with('success', 'Pendaftaran Anda berhasil dikirim!');
-        // return redirect()->route('ppdb.success')->with('success', 'Pendaftaran berhasil dikirim.');
+         return redirect()->route('ppdb.success', ['nomor_pendaftaran' => $calonSiswa->nomor_pendaftaran])
+                         ->with('success', 'Pendaftaran Anda berhasil dikirim!');
     }
 
-    public function indexSuccess() {
-        return view('pages.ppdb_success');
+    /**
+     * Display the PPDB success page with calon siswa details.
+     *
+     * @param string $nomor_pendaftaran
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function indexSuccess($nomor_pendaftaran)
+    {
+        $calonSiswa = CalonSiswa::where('nomor_pendaftaran', $nomor_pendaftaran)->first();
+
+        if (!$calonSiswa) {
+            // Handle case where registration number is not found
+            return redirect()->route('ppdb.index')->with('error', 'Nomor pendaftaran tidak ditemukan.');
+        }
+
+        return view('pages.ppdb_success', compact('calonSiswa'));
     }
 }

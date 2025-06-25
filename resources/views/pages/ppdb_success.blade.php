@@ -29,8 +29,8 @@
       </div>
     @endif
 
-    <div class="flex gap-10 items-center justify-center"> {{-- Added items-center and justify-center for better alignment --}}
-      <div class="w-40 text-center"> {{-- Added text-center for QR code caption --}}
+    <div class="flex gap-10 px-10 pb-10 items-center justify-center"> {{-- Added items-center and justify-center for better alignment --}}
+      <div class="text-center flex flex-col justify-center items-center"> {{-- Added text-center for QR code caption --}}
         <h3>Nomor Pendaftaran:</h3>
         <p class="font-bold text-lg">{{ $calonSiswa->nomor_pendaftaran }}</p>
         <div class="mt-4">
@@ -39,7 +39,7 @@
         </div>
         <p class="text-sm text-gray-600 mt-2">Scan QR ini untuk melihat detail pendaftaran.</p>
       </div>
-      <div class="w-60">
+      <div class="">
         <p class="mb-2">Terima kasih telah mendaftar di SMPIT Nurul Amanah. Data pendaftaran Anda telah kami terima.</p>
         <p class="mb-2">Nomor pendaftaran Anda adalah: <span class="font-semibold">{{ $calonSiswa->nomor_pendaftaran }}</span>. Mohon simpan nomor ini untuk referensi lebih lanjut.</p>
         <p>Anda akan segera dihubungi oleh pihak sekolah untuk informasi mengenai tahapan seleksi selanjutnya. Pastikan nomor telepon yang Anda daftarkan aktif.</p>

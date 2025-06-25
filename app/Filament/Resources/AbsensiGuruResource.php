@@ -19,7 +19,7 @@ class AbsensiGuruResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Absensi';
     protected static ?string $navigationLabel = 'Absensi Guru';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Forms\Form $form): Forms\Form
     {

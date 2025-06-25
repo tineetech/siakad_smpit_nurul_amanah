@@ -16,7 +16,8 @@ class ScanAbsensiGuru extends Page
     protected static string $view = 'filament.pages.scan-absensi-guru';
     protected static ?string $title = 'Scan Absensi Guru';
     protected static ?string $navigationLabel = 'Scan Absensi Guru';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Absensi';
+    protected static ?int $navigationSort = 2;
 
     #[On('processQR')]
     public function processQR($data)

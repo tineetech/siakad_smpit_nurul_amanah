@@ -14,6 +14,8 @@ class ScanAbsensiSiswa extends Page
     protected static ?string $navigationIcon = 'heroicon-o-camera';
     protected static string $view = 'filament.pages.scan-absensi-siswa';
     protected static ?string $title = 'Scan Absensi Siswa';
+    protected static ?string $navigationGroup = 'Absensi';
+    protected static ?int $navigationSort = 1;
 
     #[On('processQR')]
     public function processQR($data)
@@ -28,6 +30,7 @@ class ScanAbsensiSiswa extends Page
                     ->body('Format QR tidak sesuai.')
                     ->danger()
                     ->send();
+                $this->js('window.dispatchEvent(new CustomEvent("absensi-recorded"));');
                 return;
             }
 
@@ -39,6 +42,7 @@ class ScanAbsensiSiswa extends Page
                     ->body('Data siswa tidak ditemukan.')
                     ->danger()
                     ->send();
+                $this->js('window.dispatchEvent(new CustomEvent("absensi-recorded"));');
                 return;
             }
 
@@ -53,6 +57,7 @@ class ScanAbsensiSiswa extends Page
                     ->body("Siswa {$siswa->nama} sudah absen hari ini.")
                     ->warning()
                     ->send();
+                $this->js('window.dispatchEvent(new CustomEvent("absensi-recorded"));');
                 return;
             }
 
