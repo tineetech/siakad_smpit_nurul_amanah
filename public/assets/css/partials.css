@@ -1,0 +1,220 @@
+
+
+/*-----------------------------------*\
+  #HEADER
+\*-----------------------------------*/
+
+.login-btn .span { display: none; }
+
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding-block: 20px;
+  z-index: 4;
+}
+
+.header.active {
+  background-color: var(--white);
+  box-shadow: var(--shadow-2);
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: var(--ultramarine-blue);
+  font-size: 2.4rem;
+  font-weight: var(--fw-800);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.header-action-btn {
+  background-color: var(--white);
+  color: var(--ultramarine-blue);
+  padding: 12px;
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-1);
+}
+
+.header-action-btn ion-icon { --ionicon-stroke-width: 40px; }
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  background-color: var(--white);
+  max-width: 300px;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  visibility: hidden;
+  transition: 0.25s var(--cubic-in);
+}
+
+.navbar.active {
+  visibility: visible;
+  transform: translateX(300px);
+  transition: 0.5s var(--cubic-out);
+}
+
+.navbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-block-end: 1px solid var(--cultured-2);
+}
+
+.navbar .logo { font-size: 2.8rem; }
+
+.nav-close-btn {
+  background-color: var(--white);
+  color: var(--space-cadet-2);
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-1);
+}
+
+.navbar-list { padding: 15px 20px; }
+
+.navbar-item:not(:last-child) { border-block-end: 1px solid var(--cultured-2); }
+
+.navbar-link {
+  font-weight: var(--fw-500);
+  padding-block: 8px;
+  transition: var(--transition-1);
+}
+
+.navbar-link:is(:hover, :focus) { color: var(--ultramarine-blue); }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--black_80);
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-1);
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+/*-----------------------------------*\
+  #FOOTER
+\*-----------------------------------*/
+
+.footer {
+  background-color: var(--space-cadet-2);
+  color: var(--white);
+}
+
+.footer-top {
+  display: grid;
+  gap: 60px;
+  padding-block: 60px 50px;
+}
+
+.footer .logo { color: var(--white); }
+
+.footer .section-text { margin-block: 25px 35px; }
+
+.social-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.social-link {
+  background-color: var(--white_10);
+  font-size: 22px;
+  padding: 14px;
+  border-radius: var(--radius-4);
+  transition: var(--transition-1);
+}
+
+.social-link:is(:hover, :focus) { background-color: var(--ultramarine-blue); }
+
+.footer-list-title {
+  font-size: var(--fs-3);
+  font-weight: var(--fw-700);
+  margin-block-end: 20px;
+}
+
+.footer-link,
+.footer-item {
+  display: flex;
+  gap: 8px;
+}
+
+.footer-link {
+  align-items: center;
+  padding-block: 10px;
+  transition: var(--transition-1);
+}
+
+.footer-link:not(address):is(:hover, :focus) { color: var(--ultramarine-blue); }
+
+.footer-item { align-items: baseline; }
+
+.footer-item address { flex: 1; }
+
+.footer-item ion-icon { --ionicon-stroke-width: 50px; }
+
+.footer-bottom {
+  text-align: center;
+  padding-block: 20px;
+}
+
+.copyright-link {
+  display: inline-block;
+  font-weight: var(--fw-700);
+  transition: var(--transition-1);
+}
+
+.copyright-link:is(:hover, :focus) { color: var(--ultramarine-blue); }
+
+
+
+
+
+/*-----------------------------------*\
+  #BACK TO TOP
+\*-----------------------------------*/
+
+.back-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  background-color: var(--orange-peel);
+  color: var(--white);
+  font-size: 22px;
+  padding: 12px;
+  border-radius: 50%;
+  z-index: 3;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-1);
+}
+
+.back-top-btn.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-10px);
+}
+
+
