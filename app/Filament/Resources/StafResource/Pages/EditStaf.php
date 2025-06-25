@@ -16,4 +16,9 @@ class EditStaf extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+    protected function afterSave(): void
+    {
+        // Update user for the guru
+        StafResource::createUserForStaf($this->record);
+    }
 }

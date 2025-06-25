@@ -30,7 +30,7 @@ class ListPengumuman extends ListRecords
         
         // Hanya tambahkan action export dan import jika bukan siswa atau guru
         if (!in_array($user->role, [User::ROLE_SISWA, User::ROLE_GURU])) {
-            $actions = array_merge($actions, [
+            $actions = array_merge([
                 // Tombol Export
                 Actions\Action::make('exportPengumuman')
                     ->label('Export Pengumuman')
@@ -99,7 +99,7 @@ class ListPengumuman extends ListRecords
                                 ->send();
                         }
                     }),
-            ]);
+            ], $actions);
         }
 
         return $actions;

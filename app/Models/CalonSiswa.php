@@ -14,6 +14,9 @@ class CalonSiswa extends Model
         'nisn',
         'nama_lengkap',
         'profile_picture',
+        'kartu_keluarga', 
+        'akta_kelahiran', 
+        'surat_kelulusan',
         'jenis_kelamin',
         'tempat_lahir',
         'tanggal_lahir',
@@ -44,6 +47,9 @@ class CalonSiswa extends Model
         'penghasilan_ibu',
         'nomor_hp_ibu',
         'tanggal_pendaftaran',
+        'status',
+        'disetujui_oleh_user_id',
+        'tanggal_persetujuan',
     ];
     
     public function gelombang() { 

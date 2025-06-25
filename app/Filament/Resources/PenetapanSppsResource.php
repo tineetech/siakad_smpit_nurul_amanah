@@ -14,6 +14,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use app\Models\User;
 use Filament\Pages\Page;
 
 class PenetapanSppsResource extends Resource
@@ -74,22 +77,40 @@ class PenetapanSppsResource extends Resource
 
     public static function table(Table $table): Table
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $isSiswa = $user && $user->isSiswa();
+        $siswa = $isSiswa ? Siswa::where('user_id', $user->id)->first() : null;
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('siswa.nama_lengkap')->label('Siswa'),
                 Tables\Columns\TextColumn::make('pengaturanSpp.nama')->label('Nama SPP'),
                 Tables\Columns\TextColumn::make('status')->label('Status')->badge()
                 ->color(fn (string $state): string => match ($state) {
-                    'dibayar_setengah' => 'warning',
+                    'sebagian_dibayar' => 'warning',
                     'lunas' => 'success',
                     'belum_dibayar' => 'danger',
                 }),
+                Tables\Columns\TextColumn::make('siswa_id'),
                 Tables\Columns\TextColumn::make('tanggal_jatuh_tempo')->date(),
                 Tables\Columns\TextColumn::make('created_at')->since(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->filters([
+                
+                Tables\Filters\SelectFilter::make('siswa_id')
+                    ->label('Siswa')
+                    ->options(function () use ($siswa) {
+                        if ($siswa) {
+                            return Siswa::where('id', $siswa->id)
+                                ->pluck('nama_lengkap', 'id');
+                        }
+                        return Siswa::query()->pluck('nama_lengkap', 'id');
+                    })
+                    ->default($siswa->id ?? null),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -142,6 +163,63 @@ class PenetapanSppsResource extends Resource
             ->success()
             ->send();
     }
+    
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
 
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
 
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_SISWA => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
+    }
 }

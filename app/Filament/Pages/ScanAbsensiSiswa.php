@@ -90,6 +90,6 @@ class ScanAbsensiSiswa extends Page
 
     public static function canAccess(): bool
     {
-        return in_array(Auth::user()?->role, ['admin', 'tata_usaha', 'guru']);
+        return in_array(Auth::user()?->role, ['admin', 'guru']);
     }
 }

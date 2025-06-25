@@ -109,6 +109,7 @@ class SemesterResource extends Resource
             'edit' => Pages\EditSemester::route('/{record}/edit'),
         ];
     }
+
     public static function canViewAny(): bool
     {
         return self::getCurrentUserRolePermissions('viewAny');
@@ -146,10 +147,10 @@ class SemesterResource extends Resource
                 'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_GURU => [
                 'viewAny' => false,

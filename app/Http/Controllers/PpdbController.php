@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CalonSiswa;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Validation\Rule; // Tambahkan ini
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
 class PpdbController extends Controller
 {
@@ -18,24 +20,42 @@ class PpdbController extends Controller
             'gelombang_id' => 'required|exists:gelombang,id',
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:laki-laki,perempuan',
+            // Validasi untuk file
+            'profile_picture' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Max 2MB
+            'kartu_keluarga' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
+            'akta_kelahiran' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
+            'surat_kelulusan' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
         ]);
-
-        $path = null;
-        if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('images/pp');
-        }
 
         $nisnEmpat = substr(preg_replace('/\D/', '', $request->nisn), 0, 4); // hanya ambil angka, 4 digit awal
         $tahun = now()->format('Y');
         $nomor_pendaftaran = "G{$request->gelombang_id}-{$nisnEmpat}-{$tahun}"; // Using hyphen for readability
 
+        // Simpan file ke storage
+        $paths = [];
+        foreach (['profile_picture', 'kartu_keluarga', 'akta_kelahiran', 'surat_kelulusan'] as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                // Nama folder di dalam storage/app/public
+                $folder = 'ppdb/' . $field;
+                // Nama file unik (misalnya, timestamp_originalfilename.ext)
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                // Simpan file ke disk 'public'
+                $paths[$field] = $file->storeAs($folder, $fileName, 'public');
+                // Atau, jika Anda ingin Laravel otomatis menamai file dengan hash:
+                // $paths[$field] = $file->store($folder, 'public');
+            }
+        }
 
         $calonSiswa = CalonSiswa::create([
             'gelombang_id' => $request->gelombang_id,
             'nomor_pendaftaran' => $nomor_pendaftaran,
             'nisn' => $request->nisn,
             'nama_lengkap' => $request->nama_lengkap,
-            'profile_picture' => $path,
+            'profile_picture' => $paths['profile_picture'] ?? null,
+            'kartu_keluarga' => $paths['kartu_keluarga'] ?? null,
+            'akta_kelahiran' => $paths['akta_kelahiran'] ?? null,
+            'surat_kelulusan' => $paths['surat_kelulusan'] ?? null,
             'jenis_kelamin' => $request->jenis_kelamin,
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,

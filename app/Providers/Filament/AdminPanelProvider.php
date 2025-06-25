@@ -4,6 +4,10 @@ namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\Auth\CustomLogin;
 use App\Filament\Pages\Auth\EditProfile;
+use App\Filament\Widgets\AbsensiChart;
+use App\Filament\Widgets\CalonSiswaChart;
+use App\Filament\Widgets\StatsOverview;
+use App\Models\User;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -19,6 +23,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 // use App\Filament\Pages\AbsensiSiswa;
 
@@ -29,11 +34,13 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('siakad')
             ->login(CustomLogin::class)
             ->brandLogo(asset('images/pp/logo-smp.png'))
             ->favicon(asset('images/pp/logo-smp.png'))
-            ->databaseNotifications()
+            // ->user(User::class)
+            // ->databaseNotifications()
+            // ->databaseNotificationsPolling('30s')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -49,8 +56,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\AccountWidget::class,
+                StatsOverview::class,
+                CalonSiswaChart::class,
+                AbsensiChart::class,
             ])
             ->profile(EditProfile::class)
             ->middleware([
