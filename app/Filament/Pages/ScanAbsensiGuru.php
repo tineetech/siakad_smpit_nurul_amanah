@@ -81,13 +81,13 @@ class ScanAbsensiGuru extends Page
                 'guru_id' => $guru->id,
                 'tanggal_absensi' => $today,
                 'waktu_absensi' => $waktuAbsen->toTimeString(),
-                'status_kehadiran' => $statusKehadiran,
+                'status_kehadiran' => AbsensiGuru::STATUS_HADIR, 
                 'mode_absensi' => AbsensiGuru::MODE_QR,
                 'pencatat_user_id' => Auth::id(),
                 'qr_code_terscan' => $data,
                 'catatan' => 'Absensi via QR Code',
             ]);
-
+            
             Notification::make()
                 ->title('Absensi Berhasil')
                 ->body("Absensi {$guru->nama_lengkap} berhasil dicatat sebagai '{$statusKehadiran}'.")
@@ -106,6 +106,8 @@ class ScanAbsensiGuru extends Page
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
+            
+            $this->js('window.dispatchEvent(new CustomEvent("absensi-error"));');
         }
     }
 

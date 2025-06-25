@@ -25,6 +25,7 @@ class JadwalPelajaranResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
     protected static ?string $navigationGroup = 'Akademik';
+
     public static function form(Form $form): Form
     {
         /** @var \App\Models\User $user */
@@ -44,46 +45,18 @@ class JadwalPelajaranResource extends Resource
                     ->label('Kelas')
                     ->relationship('kelas', 'nama')
                     ->required()
-                    ->hidden($isGuru) // Sembunyikan untuk guru
+                    ->hidden($isGuru)
                     ->searchable()
                     ->preload(),
 
-                Forms\Components\Select::make('guru_id')
-                    ->label('Guru')
-                    ->options(Guru::query()
-                        ->with('mataPelajaran')
-                        ->get()
-                        ->pluck('nama_lengkap', 'id'))
-                    ->required()
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->afterStateUpdated(function ($state, Forms\Set $set) {
-                        if ($state) {
-                            $guru = Guru::with('mataPelajaran')->find($state);
-                            if ($guru && $guru->mataPelajaran) {
-                                $set('mata_pelajaran_id', $guru->mata_pelajaran_id);
-                            }
-                        }
-                    }),
 
+                // Field Mata Pelajaran
                 Forms\Components\Select::make('mata_pelajaran_id')
                     ->label('Mata Pelajaran')
-                    ->options(function (Forms\Get $get) {
-                        $guruId = $get('guru_id');
-                        if ($guruId) {
-                            $guru = Guru::with('mataPelajaran')->find($guruId);
-                            if ($guru && $guru->mataPelajaran) {
-                                return [$guru->mata_pelajaran_id => $guru->mataPelajaran->nama];
-                            }
-                        }
-                        return MataPelajaran::pluck('nama', 'id');
-                    })
+                    ->relationship('mataPelajaran', 'nama') // Get directly from MataPelajaran model
                     ->required()
-                    ->disabled(false) // jangan disable
-                    ->reactive()      // wajib agar ter-update
-                    ->dehydrated(),   // tetap dikirim ke server
-
+                    ->searchable()
+                    ->preload(),
                 // Field Semester
                 Forms\Components\Select::make('semester_id')
                     ->label('Semester')
@@ -107,11 +80,13 @@ class JadwalPelajaranResource extends Resource
                     ->required(),
             ]);
     }
+
     public static function table(Table $table): Table
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $isGuru = $user && $user->isGuru();
+        $isSiswa = $user && $user->isSiswa();
         $guru = $isGuru ? Guru::where('user_id', $user->id)->first() : null;
 
         return $table
@@ -121,9 +96,6 @@ class JadwalPelajaranResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('mataPelajaran.nama')
                     ->label('Mata Pelajaran')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('guru.nama_lengkap')
-                    ->label('Guru')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('hari')
                     ->label('Hari')
@@ -141,47 +113,8 @@ class JadwalPelajaranResource extends Resource
                     })
                     ->sortable(),
             ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('kelas_id')
-                    ->label('Kelas')
-                    ->relationship('kelas', 'nama')
-                    ->visible(!$isGuru)
-                    ->searchable()
-                    ->preload(),
-                Tables\Filters\SelectFilter::make('kelas_id')
-                    ->label('Kelas')
-                    ->options(function () use ($guru) {
-                        if ($guru && $guru->kelas_id) {
-                            return [$guru->kelas_id => $guru->kelas->nama];
-                        }
-                        return [];
-                    })
-                    ->visible($isGuru && $guru && $guru->kelas_id) // Hanya tampilkan jika guru memiliki kelas
-                    ->default($guru->kelas_id ?? null),
 
-                Tables\Filters\SelectFilter::make('guru_id')
-                    ->label('Guru')
-                    ->options(function () use ($guru) {
-                        if ($guru) {
-                            return Guru::where('id', $guru->id)
-                                ->pluck('nama_lengkap', 'id');
-                        }
-                        return Guru::query()->pluck('nama_lengkap', 'id');
-                    })
-                    ->default($guru->id ?? null),
 
-                Tables\Filters\SelectFilter::make('hari')
-                    ->label('Hari')
-                    ->options([
-                        1 => 'Senin',
-                        2 => 'Selasa',
-                        3 => 'Rabu',
-                        4 => 'Kamis',
-                        5 => 'Jumat',
-                        6 => 'Sabtu',
-                        7 => 'Minggu',
-                    ]),
-            ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(fn($record): bool => static::canEdit($record)),
@@ -210,10 +143,7 @@ class JadwalPelajaranResource extends Resource
         if ($user->isGuru()) {
             $guru = Guru::where('user_id', $user->id)->first();
             if ($guru) {
-                return $query->where(function ($q) use ($guru) {
-                    $q->where('guru_id', $guru->id)
-                        ->orWhere('kelas_id', $guru->kelas_id);
-                });
+                return $query->where('kelas_id', $guru->kelas_id);
             }
             return $query->where('id', 0);
         }
@@ -224,9 +154,6 @@ class JadwalPelajaranResource extends Resource
 
         return $query;
     }
-
-    // ... (sisanya tetap sama)
-
 
     public static function getRelations(): array
     {
@@ -258,10 +185,9 @@ class JadwalPelajaranResource extends Resource
     {
         $user = Auth::user();
         /** @var \App\Models\User $user */
-        // Guru can only edit their own schedules
         if ($user->isGuru()) {
             $guru = Guru::where('user_id', $user->id)->first();
-            return $guru && $record->guru_id === $guru->id;
+            return $guru && $record->guru_id === $guru->id && $record->kelas_id === $guru->kelas_id;
         }
 
         return self::getCurrentUserRolePermissions('edit');
@@ -269,13 +195,12 @@ class JadwalPelajaranResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Guru can only delete their own schedules
-        /** @var \App\Models\User $user */
         if ($user->isGuru()) {
             $guru = Guru::where('user_id', $user->id)->first();
-            return $guru && $record->guru_id === $guru->id;
+            return $guru && $record->guru_id === $guru->id && $record->kelas_id === $guru->kelas_id;
         }
 
         return self::getCurrentUserRolePermissions('delete');
@@ -297,16 +222,16 @@ class JadwalPelajaranResource extends Resource
 
         $rolePermissions = [
             User::ROLE_ADMIN => [
-                'viewAny' => false,
-                'create' => false,
-                'edit' => false,
-                'delete' => false,
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => false,
-                'create' => false,
-                'edit' => false,
-                'delete' => false,
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
             ],
             User::ROLE_GURU => [
                 'viewAny' => true,

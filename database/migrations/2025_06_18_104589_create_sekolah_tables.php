@@ -154,7 +154,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignId('mata_pelajaran_id')->constrained('mata_pelajaran')->onDelete('cascade');
-            $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
+            $table->foreignId('guru_id')->nullable()->constrained('guru')->onDelete('cascade');
             $table->foreignId('semester_id')->constrained('semester')->onDelete('cascade');
             $table->integer('hari'); // 1=Senin, 7=Minggu
             $table->foreignId('kurikulum_id')->nullable()->constrained('kurikulum')->onDelete('set null');
