@@ -145,11 +145,9 @@ class JadwalPelajaranResource extends Resource
                 Tables\Filters\SelectFilter::make('kelas_id')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama')
-                    ->visible(!$isGuru) // Sembunyikan untuk guru
+                    ->visible(!$isGuru)
                     ->searchable()
                     ->preload(),
-
-                // Filter khusus untuk guru (hanya menampilkan kelas yang dia pegang)
                 Tables\Filters\SelectFilter::make('kelas_id')
                     ->label('Kelas')
                     ->options(function () use ($guru) {
@@ -299,16 +297,16 @@ class JadwalPelajaranResource extends Resource
 
         $rolePermissions = [
             User::ROLE_ADMIN => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_GURU => [
                 'viewAny' => true,

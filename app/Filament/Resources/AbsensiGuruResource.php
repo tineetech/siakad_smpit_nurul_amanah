@@ -25,12 +25,13 @@ class AbsensiGuruResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\DatePicker::make('tanggal_absensi')->required(),
-                Forms\Components\TimePicker::make('waktu_absensi')->required(),
                 Forms\Components\Select::make('guru_id')
                     ->relationship('guru', 'nama_lengkap')
                     ->searchable()
                     ->required(),
+                Forms\Components\DatePicker::make('tanggal_absensi')->required(),
+                Forms\Components\TimePicker::make('waktu_absensi')->required(),
+
                 Forms\Components\Select::make('status_kehadiran')
                     ->options([
                         'hadir' => 'Hadir',
@@ -51,9 +52,9 @@ class AbsensiGuruResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('guru.nama_lengkap')->label('Guru'),
                 Tables\Columns\TextColumn::make('tanggal_absensi')->date(),
                 Tables\Columns\TextColumn::make('waktu_absensi'),
-                Tables\Columns\TextColumn::make('guru.nama_lengkap')->label('Guru'),
                 Tables\Columns\TextColumn::make('status_kehadiran')->label('Status'),
                 Tables\Columns\TextColumn::make('mode_absensi')->label('Mode'),
             ])
@@ -62,7 +63,8 @@ class AbsensiGuruResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->hidden(fn() => !in_array(Auth::user()->role, [User::ROLE_ADMIN, User::ROLE_TATA_USAHA])),
             ]);
     }
 

@@ -170,8 +170,11 @@ class AbsensiSiswaResource extends Resource
         if ($user->role === User::ROLE_SISWA) {
             $siswa = Siswa::where('user_id', $user->id)->first();
             if ($siswa) {
-                // Show only the student's own attendance records
-                return $query->where('siswa_id', $siswa->id)
+                // Show only the student's own attendance records and their classmates
+                return $query->whereHas('siswa', function ($q) use ($siswa) {
+                    $q->where('kelas_id', $siswa->kelas_id)
+                        ->orWhere('id', $siswa->id); // Include themselves
+                })
                     ->orderBy('tanggal_absensi', 'desc');
             }
             return $query->whereRaw('1=0');
@@ -179,7 +182,6 @@ class AbsensiSiswaResource extends Resource
 
         return $query->whereRaw('1=0');
     }
-
     public static function getRelations(): array
     {
         return [];
