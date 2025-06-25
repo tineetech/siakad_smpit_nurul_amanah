@@ -24,7 +24,7 @@ class AbsensiGuru extends Model
 
     // Tambahkan konstanta untuk status kehadiran
     const STATUS_HADIR = 'hadir';
-    const STATUS_TERLAMBAT = 'terlambat';
+    const STATUS_TERLAMBAT = 'telat';
     const STATUS_IZIN = 'izin';
     const STATUS_SAKIT = 'sakit';
     const STATUS_ALPA = 'alpha';

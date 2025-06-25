@@ -1,21 +1,17 @@
 <x-filament-panels::page>
     <x-filament::card>
-        <div class="text-center" x-data @qr-scanned.window="Livewire.dispatch('processQR', { data: event.detail });">
+        <div class="text-center" x-data @qr-scanned.window="Livewire.dispatch('processQR', { data: $event.detail });">
             <h2 class="text-xl font-bold mb-4">Scan Absensi Siswa</h2>
 
-            <div id="reader" style="width:300px; height:300px; margin: 0 auto; display:none;"></div>
-
-            <div class="mb-4" style="display: flex; justify-content: center">
-                <button id="camera-button" style="background-color: #3B82F6; color: white; padding: 8px 16px; border-radius: 4px; margin-bottom: 8px; width: auto; transition: background-color 0.2s ease-in-out;"
-                    onmouseover="this.style.backgroundColor='#2563EB'" onmouseout="this.style.backgroundColor='#3B82F6'">
-                    Aktifkan Kamera
-                </button>
-                <button id="stop-button" style="background-color: #EF4444; color: white; padding: 8px 16px; border-radius: 4px; margin-bottom: 8px; width: auto; display: none; transition: background-color 0.2s ease-in-out;"
-                    onmouseover="this.style.backgroundColor='#DC2626'" onmouseout="this.style.backgroundColor='#EF4444'">
-                    Hentikan Kamera
-                </button>
+            <!-- Kamera dengan overlay loading -->
+            <div id="reader" style="width:300px; height:300px; margin: 0 auto; position: relative;">
+                <div id="scan-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 10; justify-content: center; align-items: center; flex-direction: column;">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                    <p class="text-white mt-2">Memproses QR Code...</p>
+                </div>
             </div>
 
+            <!-- Upload file gambar QR -->
             <div id="file-section" class="mt-4">
                 <p class="text-sm text-gray-600 mb-2">Atau upload gambar QR Code:</p>
                 <input type="file" id="file-input" accept="image/*" class="hidden">
@@ -36,98 +32,164 @@
 
     <script>
         let html5QrCode;
-        let isScanning = false;
+        let isProcessing = false;
+        let cameraIsRunning = false;
+        const SCAN_COOLDOWN = 3000; // 3 detik cooldown antara scan
 
         document.addEventListener("DOMContentLoaded", function() {
-            const cameraButton = document.getElementById('camera-button');
-            const stopButton = document.getElementById('stop-button');
             const reader = document.getElementById('reader');
+            const scanOverlay = document.getElementById('scan-overlay');
+            const fileInput = document.getElementById('file-input');
+            const fileError = document.getElementById('file-error');
 
-            // setTimeout(() => {
-            //     if (isScanning) return;
-            //     html5QrCode = new Html5Qrcode("reader");
-            //     reader.style.display = 'block';
-            //     html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
-            //         onScanSuccess, onScanFailure
-            //     ).then(() => {
-            //         cameraButton.classList.add('hidden');
-            //         stopButton.style.display = 'block';
-            //         stopButton.classList.remove('hidden');
-            //         isScanning = true;
-            //     }).catch(err => {
-            //         alert("Tidak dapat mengakses kamera: " + err);
-            //     });
-            // }, 1000);
+            // Mulai kamera otomatis
+            startCamera();
 
-            cameraButton.addEventListener('click', function() {
-                if (isScanning) return;
-                html5QrCode = new Html5Qrcode("reader");
-                reader.style.display = 'block';
-                html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
-                    onScanSuccess, onScanFailure
-                ).then(() => {
-                    cameraButton.classList.add('hidden');
-                    stopButton.style.display = 'block';
-                    stopButton.classList.remove('hidden');
-                    isScanning = true;
-                }).catch(err => {
-                    alert("Tidak dapat mengakses kamera: " + err);
-                });
-            });
-
-            stopButton.addEventListener('click', function() {
-                html5QrCode.stop().then(() => {
-                    reader.style.display = 'none';
-                    cameraButton.classList.remove('hidden');
-                    stopButton.style.display = 'none';
-                    stopButton.classList.add('hidden');
-                    isScanning = false;
-                }).catch(err => {
-                    alert("Gagal menghentikan kamera: " + err);
-                });
-            });
-
-            function onScanSuccess(decodedText, decodedResult) {
-                window.dispatchEvent(new CustomEvent('qr-scanned', { detail: decodedText }));
-                html5QrCode.stop();
+            async function startCamera() {
+                if (cameraIsRunning) return;
+                
+                try {
+                    html5QrCode = new Html5Qrcode("reader");
+                    
+                    await html5QrCode.start({
+                            facingMode: "environment"
+                        }, {
+                            fps: 10,
+                            qrbox: {
+                                width: 250,
+                                height: 250
+                            },
+                            disableFlip: true
+                        },
+                        onScanSuccess,
+                        onScanFailure
+                    );
+                    
+                    cameraIsRunning = true;
+                    console.log("Camera started successfully");
+                } catch (err) {
+                    console.error("Error starting camera:", err);
+                    showError("Tidak dapat mengakses kamera: " + (err.message || err));
+                    
+                    // Coba lagi setelah 3 detik
+                    setTimeout(startCamera, 3000);
+                }
             }
 
-            function onScanFailure(error) {}
+            // Fungsi untuk menampilkan error
+            function showError(message) {
+                Notification.make()
+                    .title('Error')
+                    .body(message)
+                    .danger()
+                    .send();
+            }
 
-            document.getElementById('file-input').addEventListener('change', function(e) {
+            // Fungsi saat scan berhasil
+            function onScanSuccess(decodedText, decodedResult) {
+                if (isProcessing) return;
+                
+                try {
+                    const decodedData = JSON.parse(decodedText);
+                    if (!decodedData?.siswa_id || !decodedData?.timestamp) {
+                        throw new Error("Format QR tidak valid");
+                    }
+
+                    isProcessing = true;
+                    scanOverlay.style.display = 'flex';
+                    
+                    window.dispatchEvent(new CustomEvent('qr-scanned', {
+                        detail: decodedText
+                    }));
+
+                    // Set timeout untuk mencegah scan berulang terlalu cepat
+                    setTimeout(() => {
+                        isProcessing = false;
+                        scanOverlay.style.display = 'none';
+                    }, SCAN_COOLDOWN);
+
+                } catch (e) {
+                    showError("QR tidak valid: " + e.message);
+                    console.error("QR scan error:", e, decodedText);
+                }
+            }
+
+            function onScanFailure(error) {
+                // Kosongkan agar tidak spam error setiap frame
+            }
+
+            // Event listener untuk upload file
+            fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-                html5QrCode = new Html5Qrcode("reader");
-                html5QrCode.scanFile(file, true)
+
+                if (isProcessing) {
+                    showError('Sedang memproses scan sebelumnya');
+                    fileInput.value = '';
+                    return;
+                }
+
+                if (!file.type.match('image.*')) {
+                    fileError.textContent = 'File harus berupa gambar';
+                    fileError.classList.remove('hidden');
+                    return;
+                }
+
+                fileInput.value = '';
+                fileError.classList.add('hidden');
+                isProcessing = true;
+                scanOverlay.style.display = 'flex';
+
+                // Buat instance baru untuk scan file tanpa mengganggu kamera
+                const fileScanner = new Html5Qrcode("reader");
+                
+                fileScanner.scanFile(file, true)
                     .then(decodedText => {
-                        window.dispatchEvent(new CustomEvent('qr-scanned', { detail: decodedText }));
+                        try {
+                            const decodedData = JSON.parse(decodedText);
+                            if (!decodedData.siswa_id || !decodedData.timestamp) {
+                                throw new Error("Format QR tidak valid");
+                            }
+                            window.dispatchEvent(new CustomEvent('qr-scanned', {
+                                detail: decodedText
+                            }));
+                        } catch (e) {
+                            showError("QR tidak valid");
+                            scanOverlay.style.display = 'none';
+                            isProcessing = false;
+                        }
                     })
                     .catch(err => {
-                        document.getElementById('file-error').classList.remove('hidden');
-                        document.getElementById('file-error').textContent = 'Gagal membaca QR code: ' + err;
+                        console.error("Error scanning file:", err);
+                        fileError.textContent = 'Gagal membaca QR code: ' + (err.message || err);
+                        fileError.classList.remove('hidden');
+                        scanOverlay.style.display = 'none';
+                        isProcessing = false;
+                    })
+                    .finally(() => {
+                        // Pastikan kamera tetap berjalan setelah scan file selesai
+                        if (!cameraIsRunning) {
+                            startCamera();
+                        }
                     });
             });
-            
-            // Restart scanning otomatis setelah absensi berhasil
+
+            // Event listener untuk menutup overlay ketika absensi selesai
             window.addEventListener('absensi-recorded', () => {
-                setTimeout(() => {
-                    console.log('wpi ajg')
-                    html5QrCode = new Html5Qrcode("reader");
-                reader.style.display = 'block';
-                html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
-                    onScanSuccess, onScanFailure
-                ).then(() => {
-                    cameraButton.classList.add('hidden');
-                    stopButton.style.display = 'block';
-                    stopButton.classList.remove('hidden');
-                    isScanning = true;
-                }).catch(err => {
-                    alert("Tidak dapat mengakses kamera: " + err);
-                });
-                    // if (!isScanning) {
-                    // cameraButton.click();
-                    // }
-                }, 3000);
+                scanOverlay.style.display = 'none';
+            });
+            
+            // Event listener untuk error handling
+            window.addEventListener('absensi-error', () => {
+                scanOverlay.style.display = 'none';
+                isProcessing = false;
+            });
+
+            // Jaga kamera tetap hidup saat tab aktif kembali
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && !cameraIsRunning) {
+                    startCamera();
+                }
             });
         });
     </script>

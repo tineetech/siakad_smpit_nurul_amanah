@@ -16,6 +16,12 @@ class ScanAbsensiSiswa extends Page
     protected static ?string $title = 'Scan Absensi Siswa';
     protected static ?string $navigationGroup = 'Absensi';
     protected static ?int $navigationSort = 1;
+    public bool $notifikasiTerkirim = false;
+
+    public static function canAccess(): bool
+    {
+        return in_array(Auth::user()?->role, ['admin', 'tata_usaha', 'guru']);
+    }
 
     #[On('processQR')]
     public function processQR($data)
@@ -23,26 +29,29 @@ class ScanAbsensiSiswa extends Page
         try {
             $decoded = json_decode($data, true);
 
-
             if (!isset($decoded['siswa_id'], $decoded['timestamp'])) {
                 Notification::make()
                     ->title('QR Tidak Valid')
                     ->body('Format QR tidak sesuai.')
                     ->danger()
                     ->send();
-                $this->js('window.dispatchEvent(new CustomEvent("absensi-recorded"));');
+                $this->js('window.dispatchEvent(new CustomEvent("absensi-error"));');
                 return;
             }
 
             $siswa = Siswa::find($decoded['siswa_id']);
 
             if (!$siswa) {
-                Notification::make()
-                    ->title('Siswa Tidak Ditemukan')
-                    ->body('Data siswa tidak ditemukan.')
-                    ->danger()
-                    ->send();
-                $this->js('window.dispatchEvent(new CustomEvent("absensi-recorded"));');
+                if (!$this->notifikasiTerkirim) {
+                    Notification::make()
+                        ->title('Siswa Tidak Ditemukan')
+                        ->body('Data siswa tidak ditemukan.')
+                        ->danger()
+                        ->send();
+
+                    $this->notifikasiTerkirim = true;
+                    $this->js('window.dispatchEvent(new CustomEvent("absensi-error"));');
+                }
                 return;
             }
 
@@ -52,20 +61,25 @@ class ScanAbsensiSiswa extends Page
                 ->first();
 
             if ($existingAbsensi) {
-                Notification::make()
-                    ->title('Sudah Absen')
-                    ->body("Siswa {$siswa->nama} sudah absen hari ini.")
-                    ->warning()
-                    ->send();
-                $this->js('window.dispatchEvent(new CustomEvent("absensi-recorded"));');
+                if (!$this->notifikasiTerkirim) {
+                    Notification::make()
+                        ->title('Sudah Absen')
+                        ->body("Siswa {$siswa->nama} sudah absen hari ini.")
+                        ->warning()
+                        ->send();
+
+                    $this->notifikasiTerkirim = true;
+                    $this->js('window.dispatchEvent(new CustomEvent("absensi-error"));');
+                }
                 return;
             }
+
 
             AbsensiSiswa::create([
                 'siswa_id' => $siswa->id,
                 'tanggal_absensi' => $today,
                 'waktu_absensi' => now()->toTimeString(),
-                'status_kehadiran' => 'Hadir',
+                'status_kehadiran' => 'hadir',
                 'mode_absensi' => 'scan_qr',
                 'pencatat_user_id' => Auth::id(),
                 'qr_code_terscan' => $data,
@@ -85,6 +99,7 @@ class ScanAbsensiSiswa extends Page
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
+            $this->js('window.dispatchEvent(new CustomEvent("absensi-error"));');
         }
     }
 
