@@ -34,6 +34,7 @@ class CustomLogin extends BaseLogin
                     ->label("Password")
                     ->password()
                     ->required()
+                    ->revealable()
                     ->autocomplete('current-password')
                     ->extraInputAttributes(['tabindex' => 2]),
                 Checkbox::make('remember')

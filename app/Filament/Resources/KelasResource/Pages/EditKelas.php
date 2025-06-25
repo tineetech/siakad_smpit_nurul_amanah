@@ -38,13 +38,15 @@ class EditKelas extends EditRecord
                                           ->whereNotNull('siswa_id')
                                           ->pluck('siswa_id')
                                           ->toArray();
-
+            // dd($enrolledSiswaIds);
+            
             $data['enrolled_siswa'] = $enrolledSiswaIds;
         } else {
             // Jika tidak ada enrollment siswa untuk kelas ini,
             // set default ke semester/kurikulum aktif dan array siswa kosong
             $data['selected_semester_id'] = Semester::where('is_aktif', true)->first()?->id;
             $data['selected_kurikulum_id'] = Kurikulum::where('is_aktif', true)->first()?->id;
+            // dd('gaada');
             $data['enrolled_siswa'] = [];
         }
 

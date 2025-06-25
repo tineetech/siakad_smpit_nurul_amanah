@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PembayaranSpp extends Model
 {
@@ -21,19 +20,14 @@ class PembayaranSpp extends Model
         'catatan',
     ];
 
-    protected $casts = [
-        'tanggal_pembayaran' => 'datetime',
-        'jumlah_dibayar' => 'decimal:2',
-    ];
-
     public function siswa()
     {
         return $this->belongsTo(Siswa::class);
     }
 
-    public function penetapanSpp()
+    public function penetapan()
     {
-        return $this->belongsTo(PenetapanSppSiswa::class, 'penetapan_spp_id');
+        return $this->belongsTo(PenetapanSpps::class, 'penetapan_spp_id');
     }
 
     public function teller()

@@ -89,7 +89,7 @@ class KelasResource extends Resource
                             ->helperText('Pilih siswa yang akan dimasukkan ke kelas ini untuk semester dan kurikulum terpilih.')
                             ->default(function (Forms\Get $get) {
                                 if (!$get('selected_semester_id') || !$get('selected_kurikulum_id')) return [];
-                                return [];
+                                // return [];
                             }),
                     ])
                     ->columns(2),

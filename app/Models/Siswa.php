@@ -39,10 +39,10 @@ class Siswa extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class);
-    }
+    // public function kelas()
+    // {
+    //     return $this->belongsTo(Kelas::class);
+    // }
 
     // Relasi ke Enrollment (siswa dapat memiliki banyak enrollment)
     public function enrollments()
