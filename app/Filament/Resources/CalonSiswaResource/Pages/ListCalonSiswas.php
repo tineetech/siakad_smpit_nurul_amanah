@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Filament\Resources\CalonSiswaResource\Pages;
-
 use App\Exports\CalonSiswaExport;
 use App\Filament\Resources\CalonSiswaResource;
 use App\Imports\CalonSiswaImport;
@@ -20,7 +19,6 @@ class ListCalonSiswas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            
             // Tombol Export
             Actions\Action::make('exportCalonSiswa')
                 ->label('Export Data')
@@ -89,7 +87,6 @@ class ListCalonSiswas extends ListRecords
                             ->send();
                     }
                 }),
-
             Actions\CreateAction::make(),
         ];
     }

@@ -12,9 +12,17 @@ class Guru extends Model
     protected $table = 'guru';
 
     protected $fillable = [
-        'user_id', 'nip', 'nama_lengkap', 'jenis_kelamin', 'tempat_lahir',
-        'tanggal_lahir', 'agama', 'qr_code_data', 'status',
-        'mata_pelajaran_id', 'kelas_id',
+        'user_id',
+        'nip',
+        'nama_lengkap',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'agama',
+        'qr_code_data',
+        'status',
+        'mata_pelajaran_id',
+        'kelas_id',
     ];
 
     protected $casts = [

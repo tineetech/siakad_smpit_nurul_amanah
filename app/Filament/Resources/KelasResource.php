@@ -3,33 +3,31 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\KelasResource\Pages;
-use App\Models\Kelas; // Import model Kelas
-use App\Models\Siswa; // Import model Siswa
-use App\Models\Guru; // Import model Guru
-use App\Models\Semester; // Import model Semester
-use App\Models\Kurikulum; // Import model Kurikulum
-use App\Models\Enrollment; // Import model Enrollment
+use App\Models\Kelas;
+use App\Models\Siswa;
+use App\Models\Guru;
+use App\Models\Semester;
+use App\Models\Kurikulum;
+use App\Models\Enrollment;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Fieldset; // Untuk mengelompokkan input enrollment
+use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Collection;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class KelasResource extends Resource
 {
     protected static ?string $model = Kelas::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationGroup = 'Data Master';
     protected static ?int $navigationSort = 7;
-
     public static function form(Form $form): Form
     {
         return $form
@@ -56,7 +54,9 @@ class KelasResource extends Resource
                     ->options(Guru::pluck('nama_lengkap', 'id'))
                     ->nullable()
                     ->searchable()
-                    ->placeholder('Pilih guru sebagai wali kelas'),
+                    ->placeholder('Pilih guru sebagai wali kelas')
+                    // Display current wali kelas name when editing
+                    ->hint(fn($record) => $record?->guru ? 'Current: ' . $record->guru->nama_lengkap : ''),
 
                 Fieldset::make('Enrollment Siswa')
                     ->schema([
@@ -65,7 +65,6 @@ class KelasResource extends Resource
                             ->options(Semester::pluck('nama', 'id'))
                             ->required()
                             ->default(function () {
-                                // Default ke semester aktif saat membuat record baru
                                 return Semester::where('is_aktif', true)->first()?->id;
                             })
                             ->helperText('Pilih semester untuk enrollment siswa ini.')
@@ -76,7 +75,6 @@ class KelasResource extends Resource
                             ->options(Kurikulum::pluck('nama', 'id'))
                             ->required()
                             ->default(function () {
-                                // Default ke kurikulum aktif saat membuat record baru
                                 return Kurikulum::where('is_aktif', true)->first()?->id;
                             })
                             ->helperText('Pilih kurikulum untuk enrollment siswa ini.')
@@ -90,8 +88,6 @@ class KelasResource extends Resource
                             ->placeholder('Pilih siswa yang akan didaftarkan')
                             ->helperText('Pilih siswa yang akan dimasukkan ke kelas ini untuk semester dan kurikulum terpilih.')
                             ->default(function (Forms\Get $get) {
-                                // Untuk record baru, ini akan kosong
-                                // Untuk record yang diedit, mutateFormDataBeforeFill akan mengisi ini
                                 if (!$get('selected_semester_id') || !$get('selected_kurikulum_id')) return [];
                                 // return [];
                             }),
@@ -119,7 +115,8 @@ class KelasResource extends Resource
                 Tables\Columns\TextColumn::make('waliKelas.nama_lengkap')
                     ->label('Wali Kelas')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -127,11 +124,11 @@ class KelasResource extends Resource
                     ->label('Dibuat Pada'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('guru_id')
+                SelectFilter::make('guru_id')
                     ->label('Wali Kelas')
                     ->options(Guru::pluck('nama_lengkap', 'id'))
                     ->placeholder('Semua Wali Kelas'),
-                Tables\Filters\SelectFilter::make('tingkat')
+                SelectFilter::make('tingkat')
                     ->options(Kelas::distinct()->pluck('tingkat', 'tingkat')->filter()->toArray())
                     ->placeholder('Semua Tingkat'),
             ])
@@ -148,9 +145,7 @@ class KelasResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -177,29 +172,84 @@ class KelasResource extends Resource
             return;
         }
 
-        // Hapus enrollment siswa yang ada untuk kelas, semester, dan kurikulum yang dipilih
         $kelas->enrollments()
             ->where('semester_id', $selectedSemesterId)
             ->where('kurikulum_id', $selectedKurikulumId)
-            ->whereNotNull('siswa_id') // Pastikan hanya enrollment siswa yang dihapus
+            ->whereNotNull('siswa_id')
             ->delete();
 
-        // Tambahkan siswa yang dipilih
         foreach ($enrolledSiswaIds as $siswaId) {
             Enrollment::create([
                 'kelas_id'      => $kelas->id,
                 'siswa_id'      => $siswaId,
-                'guru_id'       => null, // Pastikan ini null untuk enrollment siswa
+                'guru_id'       => null,
                 'semester_id'   => $selectedSemesterId,
                 'kurikulum_id'  => $selectedKurikulumId,
-                'nama'          => 'Enrollment Siswa', // Nama opsional
+                'nama'          => 'Enrollment Siswa',
             ]);
         }
 
         Notification::make()
             ->title('Enrollment Berhasil Disinkronkan')
-            ->body('Data siswa di kelas ini berhasil diperbarui.') // Sesuaikan pesan notifikasi
+            ->body('Data siswa di kelas ini berhasil diperbarui.')
             ->success()
             ->send();
+    }
+
+    // ======================
+    // === PRIVILEGE HERE ===
+    // ======================
+
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
     }
 }

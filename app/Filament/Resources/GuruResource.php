@@ -3,94 +3,77 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\GuruResource\Pages;
-use App\Filament\Resources\GuruResource\RelationManagers;
-use App\Models\Guru; // Import model Guru
-use App\Models\MataPelajaran; // Import model MataPelajaran
-use App\Models\Kelas; // Import model Kelas
+use App\Models\Guru;
+use App\Models\MataPelajaran;
+use App\Models\Kelas;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class GuruResource extends Resource
 {
     protected static ?string $model = Guru::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap'; // Ikon topi akademik
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?string $navigationGroup = 'Data Master';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('nip')
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true)
-                    ->nullable()
-                    ->label('NIP')
-                    ->placeholder('Masukkan Nomor Induk Pegawai'),
-                Forms\Components\TextInput::make('nama_lengkap')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Nama Lengkap')
-                    ->placeholder('Masukkan nama lengkap guru'),
-                Forms\Components\Select::make('jenis_kelamin')
-                    ->options([
-                        'laki-laki' => 'Laki-laki',
-                        'perempuan' => 'Perempuan',
-                    ])
-                    ->required()
-                    ->label('Jenis Kelamin')
-                    ->placeholder('Pilih jenis kelamin'),
-                Forms\Components\TextInput::make('tempat_lahir')
-                    ->maxLength(255)
-                    ->nullable()
-                    ->label('Tempat Lahir')
-                    ->placeholder('Masukkan tempat lahir guru'),
-                Forms\Components\DatePicker::make('tanggal_lahir')
-                    ->nullable()
-                    ->label('Tanggal Lahir')
-                    ->placeholder('Pilih tanggal lahir'),
-                Forms\Components\Select::make('agama')
-                    ->options([
-                        'Islam'         => 'Islam',
-                        'Kristen Protestan' => 'Kristen Protestan',
-                        'Kristen Katolik' => 'Kristen Katolik',
-                        'Hindu'         => 'Hindu',
-                        'Buddha'        => 'Buddha',
-                        'Konghucu'      => 'Konghucu',
-                    ])
-                    ->nullable()
-                    ->label('Agama')
-                    ->placeholder('Pilih agama guru'),
-                Select::make('mata_pelajaran_id')
-                    ->label('Mata Pelajaran Diampu')
-                    ->options(MataPelajaran::pluck('nama', 'id'))
-                    ->nullable()
-                    ->searchable()
-                    ->placeholder('Pilih mata pelajaran yang diampu'),
-                Select::make('kelas_id')
-                    ->label('Wali Kelas (Opsional)')
-                    ->options(Kelas::pluck('nama', 'id'))
-                    ->nullable()
-                    ->searchable()
-                    ->placeholder('Pilih kelas jika guru adalah wali kelas'),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'aktif' => 'Aktif',
-                        'non-aktif' => 'Non-aktif',
-                    ])
-                    ->required()
-                    ->default('aktif')
-                    ->label('Status Guru')
-                    ->placeholder('Pilih status guru'),
-            ]);
+        return $form->schema([
+            Forms\Components\TextInput::make('nip')
+                ->maxLength(255)
+                ->unique(ignoreRecord: true)
+                ->required() // Changed from nullable to required since we'll use it for email
+                ->label('NIP'),
+            Forms\Components\TextInput::make('nama_lengkap')
+                ->required()
+                ->maxLength(255)
+                ->label('Nama Lengkap'),
+            Forms\Components\Select::make('jenis_kelamin')
+                ->options(['laki-laki' => 'Laki-laki', 'perempuan' => 'Perempuan'])
+                ->required()
+                ->label('Jenis Kelamin'),
+            Forms\Components\TextInput::make('tempat_lahir')
+                ->maxLength(255)
+                ->nullable()
+                ->label('Tempat Lahir'),
+            Forms\Components\DatePicker::make('tanggal_lahir')
+                ->nullable()
+                ->label('Tanggal Lahir'),
+            Forms\Components\Select::make('agama')
+                ->options([
+                    'Islam' => 'Islam',
+                    'Kristen Protestan' => 'Kristen Protestan',
+                    'Kristen Katolik' => 'Kristen Katolik',
+                    'Hindu' => 'Hindu',
+                    'Buddha' => 'Buddha',
+                    'Konghucu' => 'Konghucu',
+                ])
+                ->nullable()
+                ->label('Agama'),
+            Forms\Components\Select::make('mata_pelajaran_id')
+                ->label('Mata Pelajaran Diampu')
+                ->options(MataPelajaran::pluck('nama', 'id'))
+                ->nullable()
+                ->searchable(),
+            Forms\Components\Select::make('kelas_id')
+                ->label('Wali Kelas (Opsional)')
+                ->options(Kelas::pluck('nama', 'id'))
+                ->nullable()
+                ->searchable(),
+            Forms\Components\Select::make('status')
+                ->options(['aktif' => 'Aktif', 'non-aktif' => 'Non-aktif'])
+                ->required()
+                ->default('aktif')
+                ->label('Status Guru'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -119,74 +102,70 @@ class GuruResource extends Resource
                 Tables\Columns\TextColumn::make('agama')
                     ->label('Agama')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('mataPelajaran.nama') // Menampilkan nama mata pelajaran
+                Tables\Columns\TextColumn::make('mataPelajaran.nama')
                     ->label('Mata Pelajaran')
                     ->default('-')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kelas.nama') // Menampilkan nama kelas (wali kelas)
+                Tables\Columns\TextColumn::make('kelas.nama')
                     ->label('Wali Kelas')
                     ->default('-')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'aktif' => 'success',
                         'non-aktif' => 'warning',
                     })
                     ->sortable()
                     ->label('Status'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->label('Dibuat Pada'),
             ])
             ->filters([
                 SelectFilter::make('jenis_kelamin')
-                    ->options([
-                        'laki-laki' => 'Laki-laki',
-                        'perempuan' => 'Perempuan',
-                    ])
-                    ->placeholder('Semua Jenis Kelamin'),
+                    ->options(['laki-laki' => 'Laki-laki', 'perempuan' => 'Perempuan']),
                 SelectFilter::make('agama')
                     ->options([
-                        'Islam'         => 'Islam',
+                        'Islam' => 'Islam',
                         'Kristen Protestan' => 'Kristen Protestan',
                         'Kristen Katolik' => 'Kristen Katolik',
-                        'Hindu'         => 'Hindu',
-                        'Buddha'        => 'Buddha',
-                        'Konghucu'      => 'Konghucu',
-                    ])
-                    ->placeholder('Semua Agama'),
+                        'Hindu' => 'Hindu',
+                        'Buddha' => 'Buddha',
+                        'Konghucu' => 'Konghucu',
+                    ]),
                 SelectFilter::make('mata_pelajaran_id')
-                    ->label('Filter Mata Pelajaran')
-                    ->options(MataPelajaran::pluck('nama', 'id'))
-                    ->placeholder('Semua Mata Pelajaran'),
+                    ->label('Mata Pelajaran')
+                    ->options(MataPelajaran::pluck('nama', 'id')),
                 SelectFilter::make('status')
-                    ->options([
-                        'aktif' => 'Aktif',
-                        'non-aktif' => 'Non-aktif',
-                    ])
-                    ->placeholder('Semua Status'),
+                    ->options(['aktif' => 'Aktif', 'non-aktif' => 'Non-aktif']),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Guru $record, Tables\Actions\DeleteAction $action) {
+                        // Delete associated user when guru is deleted
+                        if ($record->user) {
+                            $record->user->delete();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            // Delete associated users when gurus are deleted
+                            $userIds = $records->pluck('user_id')->filter();
+                            if ($userIds->count() > 0) {
+                                User::whereIn('id', $userIds)->delete();
+                            }
+                        }),
                 ]),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -196,5 +175,83 @@ class GuruResource extends Resource
             'create' => Pages\CreateGuru::route('/create'),
             'edit' => Pages\EditGuru::route('/{record}/edit'),
         ];
+    }
+
+    // ======================
+    // === PRIVILEGE HERE ===
+    // ======================
+
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            // Other roles have no access by default
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
+    }
+
+    // Handle user creation when guru is created or updated
+    public static function createUserForGuru(Guru $guru): void
+    {
+        $email = $guru->nip . '@gmail.com';
+        $password = $guru->nip;
+
+        $user = User::updateOrCreate(
+            ['email' => $email],
+            [
+                'name' => $guru->nama_lengkap,
+                'password' => Hash::make($password),
+                'role' => User::ROLE_GURU,
+            ]
+        );
+
+        // Update the guru record with the user_id
+        $guru->user_id = $user->id;
+        $guru->save();
     }
 }

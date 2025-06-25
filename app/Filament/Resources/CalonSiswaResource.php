@@ -3,7 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CalonSiswaResource\Pages;
-
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use App\Models\CalonSiswa;
 use App\Models\Gelombang;
 use App\Exports\CalonSiswaExport;
@@ -19,6 +27,7 @@ use Filament\Pages\Page;
 class CalonSiswaResource extends Resource
 {
     protected static ?string $model = CalonSiswa::class;
+  
     protected static ?string $navigationGroup = 'Portal PPDB';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
@@ -84,5 +93,59 @@ class CalonSiswaResource extends Resource
             'create' => Pages\CreateCalonSiswa::route('/create'),
             'edit' => Pages\EditCalonSiswa::route('/{record}/edit'),
         ];
+    }
+
+    // Role permission logic tetap kamu pakai:
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
     }
 }

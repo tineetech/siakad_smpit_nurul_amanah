@@ -1,5 +1,7 @@
 <?php
 
+// app/Filament/Admin/Pages/Auth/CustomLogin.php
+
 namespace App\Filament\Admin\Pages\Auth;
 
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
@@ -12,8 +14,7 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Notifications\Notification;
 use Filament\Pages\Auth\Login as BaseLogin;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User; 
+use App\Models\Usesr;
 
 class CustomLogin extends BaseLogin
 {
@@ -23,9 +24,8 @@ class CustomLogin extends BaseLogin
     {
         return $form
             ->schema([
-                TextInput::make('email')
+                TextInput::make('email')    
                     ->label("Email")
-                    ->email()
                     ->required()
                     ->autocomplete('username')
                     ->autofocus()
@@ -41,17 +41,12 @@ class CustomLogin extends BaseLogin
                     ->label("Remember Me"),
             ])
             ->statePath('data');
-    }   
+    }
 
-    /**
-     * Authenticate the user.
-     *
-     * @return \Filament\Http\Responses\Auth\Contracts\LoginResponse
-     */
     public function authenticate(): LoginResponse
     {
         try {
-            $this->rateLimit(5); // Batasi 5 percobaan dalam 1 menit
+            $this->rateLimit(5);
         } catch (TooManyRequestsException $exception) {
             Notification::make()
                 ->title(__('filament-panels::pages.auth.login.messages.throttled', [
@@ -64,7 +59,7 @@ class CustomLogin extends BaseLogin
             return app(LoginResponse::class);
         }
 
-        $data = $this->form->getState();
+      $data = $this->form->getState();
 
         if (!Filament::auth()->attempt([
             'email' => $data['email'],
@@ -75,18 +70,6 @@ class CustomLogin extends BaseLogin
                 'data.email' => __('filament-panels::pages.auth.login.messages.failed'),
             ]);
         }
-
-        // $user = Auth::user();
-
-        // if (!$user->is_approved) {
-        //     Auth::logout(); // Penting: Logout user
-        //     request()->session()->invalidate();
-        //     request()->session()->regenerateToken();
-
-        //     throw ValidationException::withMessages([
-        //         'data.email' => 'Akun Anda belum disetujui oleh administrator.', // Pesan error kustom
-        //     ]);
-        // }
 
         session()->regenerate();
 

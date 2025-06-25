@@ -16,8 +16,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Notifications\Notification; 
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class PengumumanResource extends Resource
 {
@@ -25,6 +26,7 @@ class PengumumanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
     protected static ?string $navigationGroup = 'Manajemen Informasi';
+    protected static ?string $navigationLabel = 'Pengumuman';
 
     public static function form(Form $form): Form
     {
@@ -59,13 +61,15 @@ class PengumumanResource extends Resource
                     ->label('Tanggal & Waktu Publikasi')
                     ->placeholder('Pilih tanggal dan waktu publikasi'),
                 Forms\Components\Hidden::make('diposting_oleh_user_id')
-                    ->default(fn () => Auth::user()->id),
+                    ->default(fn() => Auth::user()->id),
             ]);
     }
-
     public static function table(Table $table): Table
     {
-        return $table
+        $user = Auth::user();
+        $isSiswaOrGuru = in_array($user->role, [User::ROLE_SISWA, User::ROLE_GURU]);
+
+        $table = $table
             ->columns([
                 Tables\Columns\TextColumn::make('judul')
                     ->searchable()
@@ -116,25 +120,30 @@ class PengumumanResource extends Resource
                         return $query
                             ->when(
                                 $data['published_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '>=', $date),
                             )
                             ->when(
                                 $data['published_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal_publikasi', '<=', $date),
                             );
                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
+            ]);
+
+        // Hanya tambahkan bulk actions jika bukan siswa atau guru
+        if (!$isSiswaOrGuru) {
+            $table = $table->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
+        }
 
+        return $table;
+    }
     public static function getRelations(): array
     {
         return [
@@ -145,7 +154,7 @@ class PengumumanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPengumumen::route('/'),
+            'index' => Pages\ListPengumuman::route('/'),
             'create' => Pages\CreatePengumuman::route('/create'),
             'edit' => Pages\EditPengumuman::route('/{record}/edit'),
         ];
@@ -158,5 +167,62 @@ class PengumumanResource extends Resource
     //     return $data;
     // }
 
- 
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_SISWA => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
+    }
 }

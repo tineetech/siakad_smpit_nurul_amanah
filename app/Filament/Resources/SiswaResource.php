@@ -4,8 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SiswaResource\Pages;
 use App\Filament\Resources\SiswaResource\RelationManagers;
-use App\Models\Siswa; // Pastikan model Siswa sudah diimpor
-use App\Models\Kelas; // Import model Kelas
+use App\Models\Siswa;
+use App\Models\Kelas;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,8 +13,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Select; // Untuk dropdown
-use Filament\Tables\Filters\SelectFilter; // Untuk filter dropdown
+use Filament\Forms\Components\Select;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class SiswaResource extends Resource
 {
@@ -32,19 +36,19 @@ class SiswaResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Nama Siswa')
-                    ->placeholder('Masukkan nama lengkap siswa'), // Placeholder
+                    ->placeholder('Masukkan nama lengkap siswa'),
                 Forms\Components\TextInput::make('nisn')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->label('NISN')
-                    ->placeholder('Masukkan NISN siswa (misal: 1234567890)'), // Placeholder
+                    ->placeholder('Masukkan NISN siswa (misal: 1234567890)'),
                 Forms\Components\TextInput::make('nis')
                     ->nullable()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->label('NIS (Nomor Induk Siswa)')
-                    ->placeholder('Masukkan NIS siswa (opsional)'), // Placeholder
+                    ->placeholder('Masukkan NIS siswa (opsional)'),
                 Forms\Components\Select::make('jenis_kelamin')
                     ->options([
                         'laki-laki' => 'Laki-laki',
@@ -52,9 +56,7 @@ class SiswaResource extends Resource
                     ])
                     ->required()
                     ->label('Jenis Kelamin')
-                    ->placeholder('Pilih jenis kelamin'), // Placeholder
-                
-                // REVISI: Agama menjadi Select dengan pilihan 6 agama
+                    ->placeholder('Pilih jenis kelamin'),
                 Forms\Components\Select::make('agama')
                     ->options([
                         'Islam'         => 'Islam',
@@ -66,30 +68,28 @@ class SiswaResource extends Resource
                     ])
                     ->nullable()
                     ->label('Agama')
-                    ->placeholder('Pilih agama siswa'), // Placeholder
-                
+                    ->placeholder('Pilih agama siswa'),
                 Forms\Components\TextInput::make('tempat_lahir')
                     ->maxLength(100)
                     ->nullable()
                     ->label('Tempat Lahir')
-                    ->placeholder('Masukkan tempat lahir siswa'), // Placeholder
+                    ->placeholder('Masukkan tempat lahir siswa'),
                 Forms\Components\DatePicker::make('tanggal_lahir')
                     ->nullable()
                     ->label('Tanggal Lahir')
-                    ->placeholder('Pilih tanggal lahir'), // Placeholder
-                
+                    ->placeholder('Pilih tanggal lahir'),
                 Select::make('kelas_id')
                     ->label('Kelas')
                     ->options(Kelas::pluck('nama', 'id'))
                     ->nullable()
                     ->searchable()
-                    ->placeholder('Pilih kelas siswa'), // Placeholder
+                    ->placeholder('Pilih kelas siswa'),
                 Forms\Components\TextInput::make('nomor_telepon_orang_tua')
                     ->nullable()
                     ->maxLength(20)
                     ->tel()
                     ->label('No. HP Orang Tua')
-                    ->placeholder('Masukkan nomor HP orang tua'), // Placeholder
+                    ->placeholder('Masukkan nomor HP orang tua'),
                 Forms\Components\Select::make('status')
                     ->options([
                         'aktif' => 'Aktif',
@@ -99,7 +99,7 @@ class SiswaResource extends Resource
                     ->required()
                     ->default('aktif')
                     ->label('Status Siswa')
-                    ->placeholder('Pilih status siswa'), // Placeholder
+                    ->placeholder('Pilih status siswa'),
             ]);
     }
 
@@ -154,7 +154,6 @@ class SiswaResource extends Resource
                         'perempuan' => 'Perempuan',
                     ])
                     ->placeholder('Semua Jenis Kelamin'),
-                // REVISI: Filter Agama
                 SelectFilter::make('agama')
                     ->options([
                         'Islam'         => 'Islam',
@@ -175,20 +174,31 @@ class SiswaResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Siswa $record, Tables\Actions\DeleteAction $action) {
+                        // Delete associated user when siswa is deleted
+                        if ($record->user) {
+                            $record->user->delete();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            // Delete associated users when students are deleted
+                            $userIds = $records->pluck('user_id')->filter();
+                            if ($userIds->count() > 0) {
+                                User::whereIn('id', $userIds)->delete();
+                            }
+                        }),
                 ]),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -198,5 +208,78 @@ class SiswaResource extends Resource
             'create' => Pages\CreateSiswa::route('/create'),
             'edit' => Pages\EditSiswa::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return self::getCurrentUserRolePermissions('viewAny');
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::getCurrentUserRolePermissions('create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('edit');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return self::getCurrentUserRolePermissions('delete');
+    }
+
+    protected static function getCurrentUserRolePermissions(string $action): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        $rolePermissions = [
+            User::ROLE_ADMIN => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_TATA_USAHA => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => true,
+            ],
+            User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+        ];
+
+        return $rolePermissions[$user->role][$action] ?? false;
+    }
+
+    // Handle user creation when siswa is created or updated
+    public static function createUserForSiswa(Siswa $siswa): void
+    {
+        $email = $siswa->nisn . '@student.com'; // Using NISN for email
+        $password = $siswa->nisn; // Using NISN as password
+
+        $user = User::updateOrCreate(
+            ['email' => $email],
+            [
+                'name' => $siswa->nama_lengkap,
+                'password' => Hash::make($password),
+                'role' => User::ROLE_SISWA,
+            ]
+        );
+
+        // Update the siswa record with the user_id
+        $siswa->user_id = $user->id;
+        $siswa->save();
     }
 }

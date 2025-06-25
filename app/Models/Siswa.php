@@ -12,9 +12,20 @@ class Siswa extends Model
     protected $table = 'siswa';
 
     protected $fillable = [
-        'user_id', 'nisn', 'nis', 'nama_lengkap', 'jenis_kelamin', 'tempat_lahir',
-        'tanggal_lahir', 'agama', 'nama_ayah', 'nama_ibu', 'nomor_telepon_orang_tua',
-        'qr_code_data', 'status',
+        'user_id',
+        'nisn',
+        'nis',
+        'nama_lengkap',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'agama',
+        'nama_ayah',
+        'nama_ibu',
+        'nomor_telepon_orang_tua',
+        'qr_code_data',
+        'status',
+        'kelas_id',
     ];
 
     protected $casts = [
