@@ -25,7 +25,8 @@ class AbsensiSiswa extends Page
     // Add this method to check if the page should be visible
     public static function canAccess(): bool
     {
-        return in_array(Auth::user()?->role, ['siswa', 'guru']);
+        // dd(Auth::user()->role);
+        return Auth::user()->role === User::ROLE_SISWA;
     }
 
     public function mount(): void

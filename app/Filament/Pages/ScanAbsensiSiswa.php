@@ -18,11 +18,6 @@ class ScanAbsensiSiswa extends Page
     protected static ?int $navigationSort = 1;
     public bool $notifikasiTerkirim = false;
 
-    public static function canAccess(): bool
-    {
-        return in_array(Auth::user()?->role, ['admin', 'tata_usaha', 'guru']);
-    }
-
     #[On('processQR')]
     public function processQR($data)
     {

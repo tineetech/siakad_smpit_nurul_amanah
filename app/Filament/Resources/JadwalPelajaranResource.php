@@ -25,6 +25,7 @@ class JadwalPelajaranResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
     protected static ?string $navigationGroup = 'Kesiswaan';
+    
     public static function form(Form $form): Form
     {
         /** @var \App\Models\User $user */

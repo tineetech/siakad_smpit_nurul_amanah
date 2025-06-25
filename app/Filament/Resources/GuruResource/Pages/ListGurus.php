@@ -10,6 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -42,6 +43,7 @@ class ListGurus extends ListRecords
                 ->label('Import Guru')
                 ->color('info')
                 ->icon('heroicon-o-arrow-up-tray')
+                ->hidden(fn($record) => Auth::user()->role === "guru" || Auth::user()->role === "tata_usaha")
                 ->form([
                     Placeholder::make('download_template_placeholder')
                         ->content(new HtmlString(

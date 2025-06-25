@@ -24,8 +24,8 @@ class AbsensiGuru extends Page
 
     public static function canAccess(): bool
     {
-        // return Auth::user()->role === User::ROLE_GURU;
-        return in_array(Auth::user()?->role, ['admin', 'kepala_sekolah']);
+        return Auth::user()->role === User::ROLE_GURU;
+        // return in_array(Auth::user()?->role, ['admin', 'kepala_sekolah']);
     }
 
     public function mount(): void

@@ -14,7 +14,7 @@ class JadwalPelajaran extends Model
     protected $fillable = [
         'kelas_id',
         'mata_pelajaran_id',
-        'guru_id',
+        // 'guru_id',
         'semester_id',
         'hari',
         'kurikulum_id',

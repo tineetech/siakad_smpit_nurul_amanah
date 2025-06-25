@@ -134,7 +134,7 @@ class KurikulumResource extends Resource
                 'delete' => false,
             ],
             User::ROLE_GURU => [
-                'viewAny' => true,
+                'viewAny' => false,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

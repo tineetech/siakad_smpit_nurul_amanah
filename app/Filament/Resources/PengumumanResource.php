@@ -131,8 +131,9 @@ class PengumumanResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()->hidden(fn($record) => !static::canEdit($record)),
+                Tables\Actions\DeleteAction::make()->hidden(fn($record) => !static::canEdit($record)),
             ]);
 
         // Hanya tambahkan bulk actions jika bukan siswa atau guru

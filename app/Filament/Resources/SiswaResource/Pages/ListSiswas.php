@@ -11,6 +11,7 @@ use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\HtmlString;
 
@@ -42,6 +43,7 @@ class ListSiswas extends ListRecords
             Actions\Action::make('importSiswa')
                 ->label('Import Siswa')
                 ->color('info')
+                ->hidden(fn($record) => Auth::user()->role === "guru" || Auth::user()->role === "tata_usaha")
                 ->icon('heroicon-o-arrow-up-tray')
                 ->form([
                     Placeholder::make('download_template_placeholder') // Beri nama unik
