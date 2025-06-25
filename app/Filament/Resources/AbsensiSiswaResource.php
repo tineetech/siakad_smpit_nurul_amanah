@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Siswa;
+use App\Models\Guru;
+
 
 class AbsensiSiswaResource extends Resource
 {
@@ -22,6 +24,33 @@ class AbsensiSiswaResource extends Resource
     protected static ?string $navigationLabel = 'Absensi Siswa';
     protected static ?string $navigationGroup = 'Absensi';
     protected static ?int $navigationSort = 3;
+    public static function shouldRegisterNavigation(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        // Admin dan Tata Usaha selalu bisa melihat menu ini
+        if ($user->isAdmin() || $user->isTataUsaha()) {
+            return true;
+        }
+
+        // Siswa bisa melihat menu ini
+        if ($user->isSiswa()) {
+            return true;
+        }
+
+        // Guru hanya bisa melihat menu ini jika memiliki kelas_id di tabel guru
+        if ($user->isGuru()) {
+            $guru = Guru::where('user_id', $user->id)->first();
+            return $guru && !is_null($guru->kelas_id);
+        }
+
+        return false;
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -158,22 +187,35 @@ class AbsensiSiswaResource extends Resource
         $query = parent::getEloquentQuery();
         $user = Auth::user();
 
+        if (!$user) {
+            return $query->whereRaw('1=0');
+        }
+
         if (in_array($user->role, [User::ROLE_ADMIN, User::ROLE_TATA_USAHA])) {
             return $query;
         }
 
         if ($user->role === User::ROLE_GURU) {
-            // Guru can see all students' attendance but can filter by class
-            return $query->orderBy('tanggal_absensi', 'desc');
+            $guru = Guru::where('user_id', $user->id)->first();
+
+            // Jika guru tidak memiliki kelas, return query kosong
+            if (!$guru || is_null($guru->kelas_id)) {
+                return $query->whereRaw('1=0');
+            }
+
+            // Filter absensi hanya untuk siswa di kelas guru tersebut
+            return $query->whereHas('siswa', function ($q) use ($guru) {
+                $q->where('kelas_id', $guru->kelas_id);
+            })
+                ->orderBy('tanggal_absensi', 'desc');
         }
 
         if ($user->role === User::ROLE_SISWA) {
             $siswa = Siswa::where('user_id', $user->id)->first();
             if ($siswa) {
-                // Show only the student's own attendance records and their classmates
                 return $query->whereHas('siswa', function ($q) use ($siswa) {
                     $q->where('kelas_id', $siswa->kelas_id)
-                        ->orWhere('id', $siswa->id); // Include themselves
+                        ->orWhere('id', $siswa->id);
                 })
                     ->orderBy('tanggal_absensi', 'desc');
             }
