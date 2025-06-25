@@ -52,7 +52,7 @@ class AbsensiGuru extends Page
     public function getViewData(): array
     {
         return [
-            'nama_lengkap' => $this->namaLengkap,
+            'nama_lengkap' => 'Guru '. $this->namaLengkap,
             'nip' => $this->nip,
             'qrSvg' => $this->qrSvg
         ];

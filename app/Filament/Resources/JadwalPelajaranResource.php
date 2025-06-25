@@ -25,7 +25,35 @@ class JadwalPelajaranResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
     protected static ?string $navigationGroup = 'Kesiswaan';
-    
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        // Admin dan Tata Usaha selalu bisa melihat menu ini
+        if ($user->isAdmin() || $user->isTataUsaha()) {
+            return true;
+        }
+
+        // Siswa bisa melihat menu ini jika memiliki kelas_id
+        if ($user->isSiswa()) {
+            return !is_null($user->kelas_id);
+        }
+
+        // Guru hanya bisa melihat menu ini jika memiliki kelas_id di tabel guru
+        if ($user->isGuru()) {
+            $guru = Guru::where('user_id', $user->id)->first();
+            return $guru && !is_null($guru->kelas_id);
+        }
+
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         /** @var \App\Models\User $user */
@@ -35,12 +63,12 @@ class JadwalPelajaranResource extends Resource
 
         return $form
             ->schema([
-                // Field Kelas untuk Guru (hidden)
+                
                 Forms\Components\Hidden::make('kelas_id')
                     ->default($guruLogin->kelas_id ?? null)
                     ->required(),
 
-                // Field Kelas untuk Admin/TU (visible)
+                
                 Forms\Components\Select::make('kelas_id')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama')
@@ -49,15 +77,15 @@ class JadwalPelajaranResource extends Resource
                     ->searchable()
                     ->preload(),
 
-
-                // Field Mata Pelajaran
+                
                 Forms\Components\Select::make('mata_pelajaran_id')
                     ->label('Mata Pelajaran')
-                    ->relationship('mataPelajaran', 'nama') // Get directly from MataPelajaran model
+                    ->relationship('mataPelajaran', 'nama')
                     ->required()
                     ->searchable()
                     ->preload(),
-                // Field Semester
+                    
+                
                 Forms\Components\Select::make('semester_id')
                     ->label('Semester')
                     ->relationship('semester', 'nama')
@@ -65,7 +93,7 @@ class JadwalPelajaranResource extends Resource
                     ->searchable()
                     ->preload(),
 
-                // Field Hari
+
                 Forms\Components\Select::make('hari')
                     ->label('Hari')
                     ->options([
@@ -80,6 +108,7 @@ class JadwalPelajaranResource extends Resource
                     ->required(),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {

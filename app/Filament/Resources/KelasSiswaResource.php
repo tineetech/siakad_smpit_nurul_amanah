@@ -22,7 +22,7 @@ class KelasSiswaResource extends Resource
     protected static ?string $model = Siswa::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationLabel = 'Data Siswa Kelas';
+    protected static ?string $navigationLabel = 'Kelas';
     protected static ?string $modelLabel = 'Siswa';
     protected static ?string $navigationGroup = 'Kesiswaan';
     protected static ?int $navigationSort = -2;
