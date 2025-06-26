@@ -29,7 +29,7 @@ class GelombangResource extends Resource
             TextInput::make('kouta_terisi')->label('Kuota Terisi')->default(0)->numeric()->required()->placeholder('Minimal 0/1'),
             DatePicker::make('tanggal_mulai')->label('Tanggal Mulai')->required()->placeholder('Pilih tanggal mulai'),
             DatePicker::make('tanggal_berakhir')->label('Tanggal Berakhir')->required()->placeholder('Pilih tanggal akhir'),
-            Select::make('created_by')->label('Dibuat Oleh')->options(User::pluck('name', 'id'))->required()->placeholder('Nama user pembuat'),
+            Select::make('created_by')->label('Dibuat Oleh')->options(User::where('role', 'admin')->orWhere('role', 'staff_ppdb')->pluck('name', 'id'))->required()->placeholder('Nama user pembuat'),
         ]);
     }
 

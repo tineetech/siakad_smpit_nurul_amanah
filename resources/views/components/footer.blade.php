@@ -13,7 +13,7 @@
           <a href="#" class="logo">SMPIT NURUL AMANAH</a>
 
           <p class="section-text">
-            Visi kami adalah Menjadi lembaga pendidikan Islam terpadu unggulan di Bogor yang mencetak siswa berakhlak mulia, berprestasi akademik, dan siap menjadi pemimpin di masa depan.
+            Visi kami adalah Menjadi lembaga pendidikan Islam terpadu unggulan di Tasikmalaya yang mencetak siswa berakhlak mulia, berprestasi akademik, dan siap menjadi pemimpin di masa depan.
           </p>
 
           <ul class="social-list">
