@@ -207,7 +207,7 @@
             <h2 class="h2 section-title">Pendidikan Islami Berkualitas</h2>
             
             <p class="item-text" style="padding-bottom: 20px; padding-top: 10px">
-              SMPIT Nurul Amanah adalah Sekolah Menengah Pertama Islam Terpadu yang berlokasi di Tasikmalaya dan berkomitmen membentuk generasi Qur'ani, cerdas, berkarakter, dan siap menghadapi tantangan global. Dengan mengusung prinsip pendidikan terpadu, kami menggabungkan kurikulum nasional dengan nilai-nilai Islam dan keterampilan abad 21 dalam satu sistem yang harmonis dan berkelanjutan.
+              SMPIT Nurul Amanah adalah Sekolah Menengah Pertama Islam Terpadu yang berlokasi di Tasikmalaya dan berkomitmen membentuk generasi Qur'ani, cerdas, berkarakter, dan siap menghadapi tantangan global. Dengan mengusung prinsip pendidikan terpadu, kami mendirikan sekolah ini dari tahun 1997.
             </p>
 
             <p class="item-text" style="padding-bottom: 20px; padding-top: 10px">
