@@ -247,12 +247,18 @@ class SiswaResource extends Resource
                 'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
-                'viewAny' => true,
-                'create' => true,
-                'edit' => true,
-                'delete' => true,
+                'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
             ],
             User::ROLE_GURU => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_KEPSEK => [
                 'viewAny' => true,
                 'create' => false,
                 'edit' => false,
@@ -266,7 +272,8 @@ class SiswaResource extends Resource
     // Handle user creation when siswa is created or updated
     public static function createUserForSiswa(Siswa $siswa): void
     {
-        $namaLengkapBersih = strtolower(str_replace(' ', '', $siswa->nama_lengkap));
+        $namaDepan = explode(' ', $siswa->nama_lengkap)[0];
+        $namaLengkapBersih = strtolower($namaDepan);
         $email = $namaLengkapBersih . '@gmail.com';
         // $password = $siswa->nisn;
         $password = "siswa123";

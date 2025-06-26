@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class CalonSiswaChart extends ChartWidget
 {
     protected static string $chart = 'line'; // Bisa 'line', 'bar', 'pie'
-    protected static ?string $heading = 'Distribusi Status Calon Siswa';
+    protected static ?string $heading = 'Distribusi Status Calon Siswa (PPDB)';
     protected static ?int $sort = -3; 
     protected int | string | array $columnSpan = 'full'; 
 
@@ -27,7 +27,7 @@ class CalonSiswaChart extends ChartWidget
         $user = Auth::user();
 
         // Hanya tampilkan chart ini untuk peran yang relevan (misal: Admin, TU, Staff PPDB)
-        if (!in_array($user->role, [User::ROLE_ADMIN, User::ROLE_TATA_USAHA, User::ROLE_STAFF_PPDB, User::ROLE_GURU])) {
+        if (!in_array($user->role, [User::ROLE_ADMIN, User::ROLE_KEPSEK, User::ROLE_TATA_USAHA, User::ROLE_STAFF_PPDB, User::ROLE_GURU])) {
             return [
                 'labels' => [],
                 'datasets' => [],

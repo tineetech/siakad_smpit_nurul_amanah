@@ -20,7 +20,7 @@ class StatsOverview extends BaseWidget
         $user = Auth::user();
 
         // Admin dan Tata Usaha melihat statistik penuh
-        if (in_array($user->role, [User::ROLE_ADMIN, User::ROLE_TATA_USAHA])) {
+        if (in_array($user->role, [User::ROLE_ADMIN, User::ROLE_STAFF_PPDB, User::ROLE_KEPSEK, User::ROLE_TATA_USAHA])) {
             return [
                 Stat::make('Total Siswa', Siswa::count())
                     ->description('Jumlah seluruh siswa aktif')

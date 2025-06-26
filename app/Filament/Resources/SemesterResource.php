@@ -158,6 +158,12 @@ class SemesterResource extends Resource
                 'edit' => false,
                 'delete' => false,
             ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
             User::ROLE_SISWA => [
                 'viewAny' => false,
                 'create' => false,

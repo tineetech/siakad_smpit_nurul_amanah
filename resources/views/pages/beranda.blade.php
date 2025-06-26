@@ -13,7 +13,7 @@
         - #HERO
       -->
 
-      <section class="hero" id="home" aria-label="hero" style="background-image: url('./assets/images/hero-bg.jpg')">
+      <section class="hero" id="home" aria-label="hero" style="background: url('./assets/images/hero-bg.jpg')">
         <div class="container">
 
           <div class="hero-content">

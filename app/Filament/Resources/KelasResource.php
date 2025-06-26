@@ -82,7 +82,20 @@ class KelasResource extends Resource
 
                         Select::make('enrolled_siswa')
                             ->label('Siswa Terdaftar')
-                            ->options(Siswa::pluck('nama_lengkap', 'id'))
+                            ->options(function (?Model $record) {
+                                $query = Siswa::query();
+                                // Jika mode edit (ada $record), sertakan siswa yang sudah terdaftar di kelas ini
+                                if ($record) {
+                                    $query->where(function ($q) use ($record) {
+                                        $q->whereNull('kelas_id')
+                                          ->orWhere('kelas_id', $record->id); // Tambahkan siswa yang sudah ada di kelas ini
+                                    });
+                                } else {
+                                    // Mode create (tidak ada $record), hanya tampilkan siswa yang belum memiliki kelas
+                                    $query->whereNull('kelas_id');
+                                }
+                                return $query->pluck('nama_lengkap', 'id');
+                            })
                             ->multiple()
                             ->searchable()
                             ->placeholder('Pilih siswa yang akan didaftarkan')
@@ -112,6 +125,11 @@ class KelasResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->label('Kapasitas'),
+                Tables\Columns\TextColumn::make('siswa_count')
+                    ->counts('siswa') // Menghitung relasi 'siswa' di model Kelas
+                    ->label('Jumlah Siswa Dikelas')
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('waliKelas.nama_lengkap')
                     ->label('Wali Kelas')
                     ->searchable()
@@ -187,6 +205,9 @@ class KelasResource extends Resource
                 'kurikulum_id'  => $selectedKurikulumId,
                 'nama'          => 'Enrollment Siswa',
             ]);
+            Siswa::where('id', $siswaId)->update([
+                'kelas_id' => $kelas->id
+            ]);
         }
 
         Notification::make()
@@ -238,6 +259,12 @@ class KelasResource extends Resource
             ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

@@ -103,8 +103,20 @@ class GelombangResource extends Resource
                 'edit' => true,
                 'delete' => true,
             ],
+            User::ROLE_STAFF_PPDB => [
+                'viewAny' => true,
+                'create' => true,
+                'edit' => true,
+                'delete' => false,
+            ],
             User::ROLE_GURU => [
                 'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

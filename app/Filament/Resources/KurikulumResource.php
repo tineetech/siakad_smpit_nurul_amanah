@@ -29,23 +29,27 @@ class KurikulumResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
-                    ->label('Nama Kurikulum'),
+                    ->label('Nama Kurikulum')
+                    ->placeholder('Masukkan nama kurikulum, contoh: Kurikulum Merdeka'),
                 Forms\Components\Textarea::make('deskripsi')
                     ->nullable()
                     ->rows(3)
-                    ->label('Deskripsi'),
+                    ->label('Deskripsi')
+                    ->placeholder('Tambahkan deskripsi singkat tentang kurikulum ini'),
                 Forms\Components\TextInput::make('tahun_mulai')
                     ->numeric()
                     ->nullable()
                     ->minLength(4)
                     ->maxLength(4)
-                    ->label('Tahun Mulai'),
+                    ->label('Tahun Mulai')
+                    ->placeholder('Contoh: 2022'),
                 Forms\Components\TextInput::make('tahun_berakhir')
                     ->numeric()
                     ->nullable()
                     ->minLength(4)
                     ->maxLength(4)
-                    ->label('Tahun Berakhir'),
+                    ->label('Tahun Berakhir')
+                    ->placeholder('Contoh: 2025'),
                 Forms\Components\Toggle::make('is_aktif')
                     ->label('Aktifkan Kurikulum Ini?')
                     ->helperText('Hanya satu kurikulum yang bisa aktif pada satu waktu.')
@@ -129,6 +133,12 @@ class KurikulumResource extends Resource
             ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

@@ -212,8 +212,14 @@ class PenetapanSppsResource extends Resource
                 'edit' => false,
                 'delete' => false,
             ],
-            User::ROLE_SISWA => [
+            User::ROLE_KEPSEK => [
                 'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_SISWA => [
+                'viewAny' => false,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

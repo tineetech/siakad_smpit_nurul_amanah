@@ -474,32 +474,6 @@ class CalonSiswaResource extends Resource
         return self::getCurrentUserRolePermissions('delete');
     }
 
-    // Filter query berdasarkan role
-    public static function getEloquentQuery(): Builder
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
-        $query = parent::getEloquentQuery();
-
-        // Admin dan Tata Usaha bisa melihat semua
-        if ($user->role === User::ROLE_ADMIN || $user->role === User::ROLE_TATA_USAHA) {
-            return $query;
-        }
-
-        // Contoh: Jika ada peran staff PPDB, hanya bisa melihat yang dia setujui atau yang statusnya menunggu
-        // Ini perlu disesuaikan dengan logika bisnis Anda.
-        if ($user->role === User::ROLE_STAFF_PPDB) {
-            // Misalnya, hanya menampilkan yang disetujui oleh dia, atau yang masih menunggu keputusan
-            return $query->where('disetujui_oleh_user_id', $user->id)
-                         ->orWhere('status', 'menunggu');
-        }
-
-        // Default: tidak bisa melihat apa-apa jika tidak ada izin khusus
-        return $query->where('id', null); // Tidak mengembalikan hasil apa pun
-    }
-
-
     protected static function getCurrentUserRolePermissions(string $action): bool
     {
         /** @var \App\Models\User $user */
@@ -513,12 +487,18 @@ class CalonSiswaResource extends Resource
             User::ROLE_ADMIN => [
                 'viewAny' => true, 'create' => true, 'edit' => true, 'delete' => true,
             ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => true, 'create' => true, 'edit' => true, 'delete' => true,
             ],
             // Asumsi ROLE_STAFF_PPDB adalah peran baru yang akan mengelola calon siswa
             User::ROLE_STAFF_PPDB => [
-                'viewAny' => true, 'create' => true, 'edit' => true, 'delete' => false, // PPDB mungkin tidak bisa delete
+                'viewAny' => true, 'create' => true, 'edit' => true, 'delete' => false,
             ],
             User::ROLE_GURU => [ // Guru tidak bisa melihat/mengelola calon siswa
                 'viewAny' => false, 'create' => false, 'edit' => false, 'delete' => false,

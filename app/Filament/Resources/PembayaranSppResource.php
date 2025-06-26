@@ -182,6 +182,12 @@ class PembayaranSppResource extends Resource
                 'edit' => true,
                 'delete' => true,
             ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
             User::ROLE_GURU => [
                 'viewAny' => false,
                 'create' => false,

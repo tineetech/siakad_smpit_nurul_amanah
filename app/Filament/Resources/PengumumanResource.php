@@ -211,6 +211,18 @@ class PengumumanResource extends Resource
                 'edit' => false,
                 'delete' => false,
             ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_STAFF_PPDB => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
             User::ROLE_SISWA => [
                 'viewAny' => true,
                 'create' => false,

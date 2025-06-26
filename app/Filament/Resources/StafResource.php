@@ -246,6 +246,12 @@ class StafResource extends Resource
                 'edit' => false,
                 'delete' => false,
             ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
         ];
 
         return $rolePermissions[$user->role][$action] ?? false;
@@ -254,7 +260,8 @@ class StafResource extends Resource
     // Handle user creation when staff is created or updated
     public static function createUserForStaf(Staf $staff): void
     {
-        $namaLengkapBersih = strtolower(str_replace(' ', '', $staff->nama_lengkap));
+        $namaDepan = explode(' ', $staff->nama_lengkap)[0];
+        $namaLengkapBersih = strtolower($namaDepan);
         $email = $namaLengkapBersih . '@gmail.com';
         // $email = $staff->nip . '@gmail.com';
         // $password = "$staff->nip";
