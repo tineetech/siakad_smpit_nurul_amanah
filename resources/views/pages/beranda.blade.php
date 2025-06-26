@@ -187,16 +187,16 @@
       <section class="section about" id="about" aria-label="about">
         <div class="container">
 
-          <figure class="about-banner">
-
-            <img src="./assets/images/about-banner.jpg" width="450" height="590" loading="lazy" alt="about banner"
+          <figure class="">
+            <img src="{{ asset('images/banner2.jpg') }}" width="450" height="590" loading="lazy" alt="about banner"
               class="w-100 about-img">
 
-            <img src="./assets/images/about-abs-1.jpg" width="188" height="242" loading="lazy" aria-hidden="true"
+
+            {{-- <img src="./assets/images/about-abs-1.jpg" width="188" height="242" loading="lazy" aria-hidden="true"
               class="abs-img abs-img-1">
 
             <img src="./assets/images/about-abs-2.jpg" width="150" height="200" loading="lazy" aria-hidden="true"
-              class="abs-img abs-img-2">
+              class="abs-img abs-img-2"> --}}
 
           </figure>
 
@@ -233,7 +233,7 @@
         <div class="container">
 
           <figure class="cta-banner">
-            <img src="./assets/images/cta-banner.jpg" width="580" height="380" loading="lazy" alt="cta banner"
+            <img src="{{ asset('images/banner3.png') }}" width="580" height="380" loading="lazy" alt="cta banner"
               class="img-cover">
           </figure>
 
