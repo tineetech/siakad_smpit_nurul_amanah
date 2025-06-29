@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class CalonSiswaChart extends ChartWidget
 {
     protected static string $chart = 'line'; // Bisa 'line', 'bar', 'pie'
-    protected static ?string $heading = 'Distribusi Status Calon Siswa (PPDB)';
+    protected static ?string $heading = 'Calon Siswa (SPMB)';
     protected static ?int $sort = -3; 
     protected int | string | array $columnSpan = 'full'; 
 
