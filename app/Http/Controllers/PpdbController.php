@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CalonSiswa;
+use App\Models\Gelombang;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Validation\Rule; // Tambahkan ini
 use Illuminate\Support\Facades\Storage; // Tambahkan ini
@@ -45,6 +46,12 @@ class PpdbController extends Controller
                 // Atau, jika Anda ingin Laravel otomatis menamai file dengan hash:
                 // $paths[$field] = $file->store($folder, 'public');
             }
+        }
+        $gelombang = Gelombang::where('id', $request->gelombang_id)->whereColumn('kouta_terisi', '<', 'kouta')->first();
+        if ($gelombang) {
+            $gelombang->increment('kouta_terisi');
+        } else {
+            return back()->withErrors(['gelombang_id' => 'Gelombang tidak valid atau kuota sudah penuh.']);
         }
 
         $calonSiswa = CalonSiswa::create([

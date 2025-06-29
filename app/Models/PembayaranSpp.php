@@ -16,6 +16,7 @@ class PembayaranSpp extends Model
         'jumlah_dibayar',
         'tanggal_pembayaran',
         'metode_pembayaran',
+        'bukti_tf',
         'teller_user_id',
         'catatan',
     ];

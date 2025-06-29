@@ -85,7 +85,7 @@
         </div>
 
         {{-- Existing overlay for main navigation (keep separate) --}}
-        {{-- <div class="overlay" data-nav-toggler data-overlay></div> --}}
+        <div class="overlay" data-nav-toggler data-overlay></div>
 
     </div>
 </header>

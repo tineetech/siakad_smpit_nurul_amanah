@@ -9,6 +9,7 @@ use App\Models\PenetapanSpps;
 use App\Models\Siswa;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Form;
@@ -38,6 +39,7 @@ class PembayaranSppResource extends Resource
                 ->label('Tagihan/Penetapan SPP')
                 ->options(
                     PenetapanSpps::with('pengaturanSpp', 'siswa')
+                        ->where('status', '!=', 'lunas')
                         ->get()
                         ->mapWithKeys(fn ($item) => [
                             $item->id => $item->siswa->nama_lengkap . ' - ' . $item->pengaturanSpp?->nama . ' - ' . number_format((float) $item->pengaturanSpp?->jumlah),
@@ -76,7 +78,16 @@ class PembayaranSppResource extends Resource
                     'transfer' => 'Transfer',
                     'qris' => 'QRIS',
                 ])
+                ->reactive()
                 ->required(),
+            
+            FileUpload::make('bukti_tf')
+                ->label('Bukti Transfer (JIKA TF)')
+                ->directory('bukti-transfer-spp')
+                ->visibility('public')
+                ->disk('public')
+                ->nullable()
+                ->image(),
 
             Forms\Components\Select::make('status')
                 ->options([
@@ -84,12 +95,12 @@ class PembayaranSppResource extends Resource
                     'sebagian_dibayar' => 'Sebagian Dibayar',
                     'belum_dibayar' => 'Belum Dibayar',
                 ])
-                ->default('sebagian_dibayar')
+                ->default('lunas')
                 ->required(),
 
             Forms\Components\Select::make('teller_user_id')
                 ->label('Petugas/Teller')
-                ->options(User::pluck('name', 'id'))
+                ->options(User::where('role', 'tata_usaha')->pluck('name', 'id'))
                 ->required(),
 
             Forms\Components\Textarea::make('catatan')
@@ -116,6 +127,7 @@ class PembayaranSppResource extends Resource
             ])
             ->filters([])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('tandaiLunas')

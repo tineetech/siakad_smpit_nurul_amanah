@@ -70,7 +70,7 @@ class PenetapanSppsResource extends Resource
                 Forms\Components\DatePicker::make('tanggal_jatuh_tempo')
                     ->label('Tanggal Jatuh Tempo')
                     ->required()
-                    ->minDate(now())
+                    // ->minDate(now())
                     ->placeholder('Pilih tanggal jatuh tempo')
             ]);
     }
