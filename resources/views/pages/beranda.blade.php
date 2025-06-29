@@ -26,7 +26,7 @@
               Bersama SMPIT Nurul Amanah, kami tidak hanya mendidik, tapi juga menanamkan iman, akhlak, dan budi pekerti siswa.
             </p>
 
-            <a href="{{ route('ppdb.index') }}" class="btn btn-primary">
+            <a href="{{ route('spmb.index') }}" class="btn btn-primary">
               <span class="span">Daftar Sekarang</span>
 
               <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
@@ -247,7 +247,7 @@
               Daftarkan putra-putri Anda sekarang dan jadikan mereka bagian dari generasi unggul yang siap menghadapi tantangan global.
             </p>
 
-            <a href="{{ route('ppdb.index') }}" class="btn btn-secondary">
+            <a href="{{ route('spmb.index') }}" class="btn btn-secondary">
               <span class="span">Daftar Sekarang</span>
 
               <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>

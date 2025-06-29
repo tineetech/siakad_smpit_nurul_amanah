@@ -40,7 +40,7 @@
             </div>
         @endif
 
-        <form action="{{ route('ppdb.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form action="{{ route('spmb.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             <h2 class="text-lg font-semibold mt-8">Data Pribadi Siswa</h2>

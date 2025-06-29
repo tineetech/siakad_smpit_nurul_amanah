@@ -85,10 +85,10 @@
           </li>
 
           <li>
-            <a href="/ppdb" class="footer-link">
+            <a href="/spmb" class="footer-link">
               <ion-icon name="chevron-forward" aria-hidden="true"></ion-icon>
 
-              <span class="span">PPDB Pendaftaran</span>
+              <span class="span">SPMB Pendaftaran</span>
             </a>
           </li>
         </ul>
@@ -132,10 +132,10 @@
           </li>
 
           <li>
-            <a href="/ppdb" class="footer-link">
+            <a href="/spmb" class="footer-link">
               <ion-icon name="chevron-forward" aria-hidden="true"></ion-icon>
 
-              <span class="span">PPDB Pendaftaran</span>
+              <span class="span">SPMB Pendaftaran</span>
             </a>
           </li>
 

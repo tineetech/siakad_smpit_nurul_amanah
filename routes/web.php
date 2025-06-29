@@ -13,11 +13,11 @@ Route::get('/', function () {
     return view('pages.beranda');
 })->name('home');
 
-Route::prefix('ppdb')->group(function() {
-    Route::get('/', [PpdbController::class, 'index'])->name('ppdb.index');
-    Route::post('/', [PpdbController::class, 'store'])->name('ppdb.store');
+Route::prefix('spmb')->group(function() {
+    Route::get('/', [PpdbController::class, 'index'])->name('spmb.index');
+    Route::post('/', [PpdbController::class, 'store'])->name('spmb.store');
 
-    Route::get('/success/{nomor_pendaftaran}', [PpdbController::class, 'indexSuccess'])->name('ppdb.success');
+    Route::get('/success/{nomor_pendaftaran}', [PpdbController::class, 'indexSuccess'])->name('spmb.success');
 });
 
 

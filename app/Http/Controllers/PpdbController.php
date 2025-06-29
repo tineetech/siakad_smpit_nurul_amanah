@@ -95,7 +95,7 @@ class PpdbController extends Controller
             'tanggal_pendaftaran' => now(),
         ]);
 
-         return redirect()->route('ppdb.success', ['nomor_pendaftaran' => $calonSiswa->nomor_pendaftaran])
+         return redirect()->route('spmb.success', ['nomor_pendaftaran' => $calonSiswa->nomor_pendaftaran])
                          ->with('success', 'Pendaftaran Anda berhasil dikirim!');
     }
 

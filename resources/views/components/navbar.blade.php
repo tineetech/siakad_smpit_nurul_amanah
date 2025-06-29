@@ -33,7 +33,7 @@
                 </li>
 
                 <li class="navbar-item">
-                    <a href="{{ route('ppdb.index') }}" class="navbar-link" data-nav-toggler>PPDB</a>
+                    <a href="{{ route('spmb.index') }}" class="navbar-link" data-nav-toggler>SPMB</a>
                 </li>
 
             </ul>
