@@ -106,4 +106,5 @@
         @endforeach
     </div>
 </body>
+
 </html>
