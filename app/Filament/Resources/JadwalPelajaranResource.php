@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Filament\Forms\Components\TimePicker;
 
 class JadwalPelajaranResource extends Resource
 {
@@ -106,6 +107,12 @@ class JadwalPelajaranResource extends Resource
                         7 => 'Minggu',
                     ])
                     ->required(),
+
+                TimePicker::make('jam_mulai')
+                    ->required(),
+
+                TimePicker::make('jam_selesai')
+                    ->required(),
             ]);
     }
 
@@ -140,6 +147,12 @@ class JadwalPelajaranResource extends Resource
                         ];
                         return $hari[$state] ?? '-';
                     })
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('jam_mulai')
+                    ->label('Jam Mulai')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('jam_selesai')
+                    ->label('Jam Selesai')
                     ->sortable(),
             ])
 

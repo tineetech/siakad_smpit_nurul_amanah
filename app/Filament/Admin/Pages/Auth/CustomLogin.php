@@ -67,7 +67,8 @@ class CustomLogin extends BaseLogin
         ], $data['remember'])) {
             // Jika otentikasi gagal
             throw ValidationException::withMessages([
-                'data.email' => __('filament-panels::pages.auth.login.messages.failed'),
+                // 'data.email' => __('filament-panels::pages.auth.login.messages.failed'),
+                'data.email' => "Credentials Akun Salah.",
             ]);
         }
 

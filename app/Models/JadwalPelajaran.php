@@ -17,6 +17,8 @@ class JadwalPelajaran extends Model
         // 'guru_id',
         'semester_id',
         'hari',
+        'jam_mulai',
+        'jam_selesai',
         'kurikulum_id',
     ];
 
