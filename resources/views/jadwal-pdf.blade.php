@@ -94,7 +94,7 @@
                     @foreach($sortedItems as $item)
                         <div class="schedule-item">
                             <span class="time">{{ $item->jam_mulai ?? 'N/A' }} - {{ $item->jam_selesai ?? 'N/A' }}</span>
-                            <span class="subject">{{ $item->mataPelajaran->nama ?? 'Mata Pelajaran Tidak Dikenal' }} - {{ $item->guru->nama ?? 'Guru Tidak Dikenal' }}</span><br>
+                            <span class="subject">{{ $item->mataPelajaran->nama ?? 'Mata Pelajaran Tidak Dikenal' }}</span><br>
                         </div>
                     @endforeach
                 @else
