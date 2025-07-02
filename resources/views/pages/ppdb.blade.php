@@ -54,7 +54,7 @@
                 {{-- NISN --}}
                 <div>
                     <label class="block text-sm font-medium">NISN <span class="text-red-500">*</span></label>
-                    <input type="number" name="nisn" required placeholder="NISN" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="text" name="nisn" required placeholder="NISN" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Nama Lengkap --}}
@@ -106,13 +106,13 @@
                 {{-- Anak Ke --}}
                 <div>
                     <label class="block text-sm font-medium">Anak Ke- <span class="text-red-500">*</span></label>
-                    <input type="number" name="anak_ke" required placeholder="Anak Ke-" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="text" name="anak_ke" required placeholder="Anak Ke-" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Jumlah Saudara --}}
                 <div>
                     <label class="block text-sm font-medium">Jumlah Saudara Kandung <span class="text-red-500">*</span></label>
-                    <input type="number" name="jumlah_saudara" required placeholder="Jumlah Saudara Kandung" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="text" name="jumlah_saudara" required placeholder="Jumlah Saudara Kandung" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Cita-cita --}}
@@ -185,7 +185,7 @@
                 </div>
                 <div>
                     <label class="block text-sm">Status Ayah <span class="text-red-500">*</span></label>
-                    <select name="status_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
+                    <select name="status_ayah" id="status_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
                         <option value="" disabled selected>Pilih Status</option>
                         <option value="hidup">Hidup</option>
                         <option value="meninggal">Meninggal</option>
@@ -220,7 +220,7 @@
                 </div>
                 <div>
                     <label class="block text-sm">Penghasilan Bulanan Ayah <span class="text-red-500">*</span></label>
-                    <select name="penghasilan_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
+                    <select name="penghasilan_ayah" id="penghasilan_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
                         <option value="" disabled selected>Pilih Penghasilan</option>
                         <option value="< 1 Juta">&lt; 1 Juta</option>
                         <option value="1 Juta - 2 Juta">1 Juta - 2 Juta</option>
@@ -243,7 +243,7 @@
                 </div>
                 <div>
                     <label class="block text-sm">Status Ibu <span class="text-red-500">*</span></label>
-                    <select name="status_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
+                    <select name="status_ibu" id="status_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
                         <option value="" disabled selected>Pilih Status</option>
                         <option value="hidup">Hidup</option>
                         <option value="meninggal">Meninggal</option>
@@ -278,7 +278,7 @@
                 </div>
                 <div>
                     <label class="block text-sm">Penghasilan Bulanan Ibu <span class="text-red-500">*</span></label>
-                    <select name="penghasilan_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
+                    <select name="penghasilan_ibu" id="penghasilan_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
                         <option value="" disabled selected>Pilih Penghasilan</option>
                         <option value="< 1 Juta">&lt; 1 Juta</option>
                         <option value="1 Juta - 2 Juta">1 Juta - 2 Juta</option>
@@ -314,7 +314,29 @@
                 }
             });
 
-            // Removed the section that tried to load old('gelombang_id')
+            // Function to handle the disabling/enabling of penghasilan input
+            function togglePenghasilan(statusSelectId, penghasilanSelectId) {
+                const statusSelect = $('#' + statusSelectId);
+                const penghasilanSelect = $('#' + penghasilanSelectId);
+
+                statusSelect.on('change', function() {
+                    if ($(this).val() === 'meninggal') {
+                        penghasilanSelect.val('').trigger('change'); // Clear selection
+                        penghasilanSelect.prop('disabled', true);
+                        penghasilanSelect.prop('required', false); // No longer required if disabled
+                    } else {
+                        penghasilanSelect.prop('disabled', false);
+                        penghasilanSelect.prop('required', true);
+                    }
+                });
+
+                // Trigger on page load in case of validation errors or pre-filled data
+                statusSelect.trigger('change');
+            }
+
+            // Apply the function to Ayah's and Ibu's status/penghasilan fields
+            togglePenghasilan('status_ayah', 'penghasilan_ayah');
+            togglePenghasilan('status_ibu', 'penghasilan_ibu');
         });
     </script>
 

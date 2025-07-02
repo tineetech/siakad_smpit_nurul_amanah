@@ -158,7 +158,7 @@
           <li class="footer-item">
             <ion-icon name="call" aria-hidden="true"></ion-icon>
 
-            <a href="https://wa.me/6281324198827" class="footer-link">+ 6281324198827</a>
+            <a href="https://wa.me/~" class="footer-link">+ 6281324198827</a>
           </li>
 
           <li class="footer-item">

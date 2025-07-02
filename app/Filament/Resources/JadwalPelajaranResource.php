@@ -27,33 +27,6 @@ class JadwalPelajaranResource extends Resource
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
     protected static ?string $navigationGroup = 'Kesiswaan';
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        
-        if (!$user) {
-            return false;
-        }
-
-        // Admin dan Tata Usaha selalu bisa melihat menu ini
-        if ($user->isAdmin() || $user->isTataUsaha()) {
-            return true;
-        }
-
-        // Siswa bisa melihat menu ini jika memiliki kelas_id
-        if ($user->isSiswa()) {
-            return !is_null($user->kelas_id);
-        }
-
-        // Guru hanya bisa melihat menu ini jika memiliki kelas_id di tabel guru
-        if ($user->isGuru()) {
-            $guru = Guru::where('user_id', $user->id)->first();
-            return $guru && !is_null($guru->kelas_id);
-        }
-
-        return false;
-    }
 
     public static function form(Form $form): Form
     {

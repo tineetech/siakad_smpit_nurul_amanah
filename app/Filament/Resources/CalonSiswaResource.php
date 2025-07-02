@@ -25,7 +25,7 @@ class CalonSiswaResource extends Resource
 {
     protected static ?string $model = CalonSiswa::class;
 
-    protected static ?string $navigationGroup = 'Portal PPDB';
+    protected static ?string $navigationGroup = 'Portal SPMB';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 

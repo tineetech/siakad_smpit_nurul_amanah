@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use app\Models\User;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class PenetapanSppsResource extends Resource
 {
@@ -100,7 +100,6 @@ class PenetapanSppsResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->filters([
-                
                 Tables\Filters\SelectFilter::make('siswa_id')
                     ->label('Siswa')
                     ->options(function () use ($siswa) {
@@ -110,7 +109,7 @@ class PenetapanSppsResource extends Resource
                         }
                         return Siswa::query()->pluck('nama_lengkap', 'id');
                     })
-                    ->default($siswa->id ?? null),
+                    ->default($user->id ?? null),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -219,7 +218,7 @@ class PenetapanSppsResource extends Resource
                 'delete' => false,
             ],
             User::ROLE_SISWA => [
-                'viewAny' => false,
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

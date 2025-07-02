@@ -58,8 +58,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 StatsOverview::class,
-                CalonSiswaChart::class,
-                AbsensiChart::class,
+                // CalonSiswaChart::class,
+                // AbsensiChart::class,
             ])
             ->profile(EditProfile::class)
             ->middleware([
@@ -78,7 +78,7 @@ class AdminPanelProvider extends PanelProvider
                 'Kesiswaan', // Ini akan muncul kedua
                 'Absensi',
                 'POS SPP',       // Ini akan muncul ketiga
-                'Portal PPDB',
+                'Portal SPMB',
                 'Pengaturan',
             ])
             ->defaultThemeMode(ThemeMode::Light)

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class GelombangResource extends Resource
 {
     protected static ?string $model = Gelombang::class;
-    protected static ?string $navigationGroup = 'Portal PPDB';
+    protected static ?string $navigationGroup = 'Portal SPMB';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 

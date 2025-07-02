@@ -41,7 +41,7 @@ class MataPelajaranResource extends Resource
                     ->placeholder('Contoh: MTK001, FQH002'),
                 Forms\Components\Select::make('jenis')
                     ->options([
-                        'reguler' => 'Reguler',
+                        'umum' => 'Umum',
                         'kepesantrenan' => 'Kepesantrenan',
                         'ekstrakurikuler' => 'Ekstrakurikuler', // Contoh tambahan
                     ])
@@ -76,7 +76,7 @@ class MataPelajaranResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('jenis')
                     ->options([
-                        'reguler' => 'Reguler',
+                        'umum' => 'Umum',
                         'kepesantrenan' => 'Kepesantrenan',
                         'ekstrakurikuler' => 'Ekstrakurikuler',
                     ])
