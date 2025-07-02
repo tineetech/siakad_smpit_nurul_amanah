@@ -18,7 +18,7 @@
 
           <div class="hero-content">
 
-            <p class="section-subtitle">Bersama Kami Pasti Terpadu</p>
+            <p class="section-subtitle">Bersama Kami Pasti Terpadu test</p>
 
             <h2 class="h1 hero-title">Membentuk Generasi Islami Yang Cerdas</h2>
 
