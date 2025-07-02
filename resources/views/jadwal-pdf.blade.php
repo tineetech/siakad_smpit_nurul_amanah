@@ -5,7 +5,7 @@
     <style>
         body { font-family: 'Arial', sans-serif; margin: 20px; }
         .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { margin: 0; }
+        .header h1 { margin: 0; }    
         .schedule-container {
             display: flex;
             flex-wrap: wrap;
