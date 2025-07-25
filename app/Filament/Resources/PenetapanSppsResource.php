@@ -109,7 +109,7 @@ class PenetapanSppsResource extends Resource
                         }
                         return Siswa::query()->pluck('nama_lengkap', 'id');
                     })
-                    ->default($user->id ?? null),
+                    ->default($user->isSiswa() ? $user->id : null),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

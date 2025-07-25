@@ -46,10 +46,10 @@ class StafImport implements ToModel, WithHeadingRow, WithValidation
             }
         }
 
-        // Pastikan NIP disimpan sebagai string, bahkan jika hanya angka
-        $nip = (string) ($row['nip'] ?? '');
-        if (empty($nip) || $nip === '-') {
-            $nip = null;
+        // Pastikan niy disimpan sebagai string, bahkan jika hanya angka
+        $niy = (string) ($row['niy'] ?? '');
+        if (empty($niy) || $niy === '-') {
+            $niy = null;
         }
 
         // Pastikan jenis_kelamin, jabatan, dan status disimpan lowercase untuk enum
@@ -58,7 +58,7 @@ class StafImport implements ToModel, WithHeadingRow, WithValidation
         $statusStaf = strtolower($row['status'] ?? 'aktif'); // Default 'aktif' jika kosong
 
         return new Staf([
-            'nip'                   => $nip,
+            'niy'                   => $niy,
             'nama_lengkap'          => $toNullIfEmptyOrDash($row['nama_lengkap'] ?? ''),
             'jabatan'               => $toNullIfEmptyOrDash($jabatan),
             'jenis_kelamin'         => $toNullIfEmptyOrDash($jenisKelamin),
@@ -77,7 +77,7 @@ class StafImport implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            'nip'                   => ['nullable', 'max:255', Rule::unique('staf', 'nip')],
+            'niy'                   => ['nullable', 'max:255', Rule::unique('staf', 'niy')],
             'nama_lengkap'          => ['required', 'string', 'max:255'],
             'jabatan'               => ['required', Rule::in(['tata usaha', 'kepala sekolah', 'administrasi', 'panitia ppdb'])],
             'jenis_kelamin'         => ['required', Rule::in(['laki-laki', 'perempuan'])],
@@ -118,8 +118,8 @@ class StafImport implements ToModel, WithHeadingRow, WithValidation
     public function customValidationMessages()
     {
         return [
-            'nip.max'                   => 'NIP maksimal :max karakter.',
-            'nip.unique'                => 'NIP ini sudah terdaftar di database.',
+            'niy.max'                   => 'niy maksimal :max karakter.',
+            'niy.unique'                => 'niy ini sudah terdaftar di database.',
 
             'nama_lengkap.required'     => 'Nama Lengkap wajib diisi.',
             'nama_lengkap.string'       => 'Nama Lengkap harus berupa teks.',

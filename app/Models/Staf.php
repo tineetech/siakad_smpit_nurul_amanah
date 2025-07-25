@@ -13,7 +13,7 @@ class Staf extends Model
 
     protected $fillable = [
         'user_id',
-        'nip',
+        'niy',
         'nama_lengkap',
         'jabatan',
         'jenis_kelamin',

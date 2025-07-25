@@ -32,11 +32,11 @@ class StafResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nip')
+                Forms\Components\TextInput::make('niy')
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->nullable()
-                    ->label('NIP')
+                    ->label('NIY (Nomor Induk Yayasan)')
                     ->placeholder('Masukkan Nomor Induk Pegawai'),
                 Forms\Components\TextInput::make('nama_lengkap')
                     ->required()
@@ -73,12 +73,8 @@ class StafResource extends Resource
                 Forms\Components\Select::make('agama')
                     ->options([
                         'Islam'         => 'Islam',
-                        'Kristen Protestan' => 'Kristen Protestan',
-                        'Kristen Katolik' => 'Kristen Katolik',
-                        'Hindu'         => 'Hindu',
-                        'Buddha'        => 'Buddha',
-                        'Konghucu'      => 'Konghucu',
                     ])
+                    ->default('Islam')
                     ->nullable()
                     ->label('Agama')
                     ->placeholder('Pilih agama staf'),
@@ -98,10 +94,10 @@ class StafResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nip')
+                Tables\Columns\TextColumn::make('niy')
                     ->searchable()
                     ->sortable()
-                    ->label('NIP'),
+                    ->label('NIY'),
                 Tables\Columns\TextColumn::make('nama_lengkap')
                     ->searchable()
                     ->sortable()

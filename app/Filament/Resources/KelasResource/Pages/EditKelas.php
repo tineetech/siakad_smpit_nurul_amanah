@@ -55,6 +55,6 @@ class EditKelas extends EditRecord
 
     protected function afterSave(): void
     {
-        KelasResource::syncEnrollments($this->data, $this->record);
+        KelasResource::syncEnrollments($this->data, $this->record, 'edit');
     }
 }

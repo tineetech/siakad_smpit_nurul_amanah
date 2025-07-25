@@ -39,7 +39,7 @@ class SiswaExport implements FromCollection, WithHeadings, ShouldAutoSize, WithS
                 'No. HP Orang Tua'  => $siswa->nomor_telepon_orang_tua ?? '-',
                 'Kelas'             => $siswa->kelas->nama ?? '-', // Ambil nama kelas dari relasi
                 'Status Siswa'      => $siswa->status,
-                'Dibuat Pada'       => $siswa->created_at->format('d-m-Y H:i:s'),
+                'Dibuat Pada'       => $siswa->created_at,
             ];
         });
     }

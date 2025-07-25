@@ -27,7 +27,7 @@ class GuruExport implements FromCollection, WithHeadings, ShouldAutoSize, WithSt
             $counter++;
             return [
                 'No'                => $counter,
-                'NIP'               => ' ' . (string) ($guru->nip ?? '-'), // Tambahkan spasi agar dianggap teks
+                'NIY'               => ' ' . (string) ($guru->niy ?? '-'), // Tambahkan spasi agar dianggap teks
                 'Nama Lengkap'      => $guru->nama_lengkap,
                 'Jenis Kelamin'     => $guru->jenis_kelamin,
                 'Tempat Lahir'      => $guru->tempat_lahir ?? '-',
@@ -48,7 +48,7 @@ class GuruExport implements FromCollection, WithHeadings, ShouldAutoSize, WithSt
     {
         return [
             'No',
-            'NIP',
+            'NIY',
             'Nama Lengkap',
             'Jenis Kelamin',
             'Tempat Lahir',

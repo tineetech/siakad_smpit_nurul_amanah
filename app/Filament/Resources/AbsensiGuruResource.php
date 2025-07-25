@@ -43,7 +43,9 @@ class AbsensiGuruResource extends Resource
                     ->options([
                         'scan_qr' => 'Scan QR',
                         'manual' => 'Manual',
-                    ])->required(),
+                    ])
+                    ->required()
+                    ->default('manual'),
                 Forms\Components\Textarea::make('catatan'),
             ]);
     }
@@ -121,6 +123,12 @@ class AbsensiGuruResource extends Resource
             ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

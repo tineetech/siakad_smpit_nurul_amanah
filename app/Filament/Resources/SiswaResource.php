@@ -60,12 +60,8 @@ class SiswaResource extends Resource
                 Forms\Components\Select::make('agama')
                     ->options([
                         'Islam'         => 'Islam',
-                        'Kristen Protestan' => 'Kristen Protestan',
-                        'Kristen Katolik' => 'Kristen Katolik',
-                        'Hindu'         => 'Hindu',
-                        'Buddha'        => 'Buddha',
-                        'Konghucu'      => 'Konghucu',
                     ])
+                    ->default('Islam')
                     ->nullable()
                     ->label('Agama')
                     ->placeholder('Pilih agama siswa'),

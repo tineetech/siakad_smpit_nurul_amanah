@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class ListGurus extends ListRecords
 {
     protected static string $resource = GuruResource::class;
+    protected static ?string $title = 'Daftar Guru';
 
     protected function getHeaderActions(): array
     {

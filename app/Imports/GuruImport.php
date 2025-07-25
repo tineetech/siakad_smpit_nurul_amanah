@@ -56,10 +56,10 @@ class GuruImport implements ToModel, WithHeadingRow, WithValidation
         }
         $kelas = Kelas::where('nama', $row['wali_kelas'] ?? null)->first();
 
-        // Pastikan NIP disimpan sebagai string, bahkan jika hanya angka
-        $nip = (string) ($row['nip'] ?? '');
-        if (empty($nip) || $nip === '-') {
-            $nip = null;
+        // Pastikan niy disimpan sebagai string, bahkan jika hanya angka
+        $niy = (string) ($row['niy'] ?? '');
+        if (empty($niy) || $niy === '-') {
+            $niy = null;
         }
 
         // Pastikan jenis_kelamin dan status disimpan lowercase untuk enum
@@ -67,7 +67,7 @@ class GuruImport implements ToModel, WithHeadingRow, WithValidation
         $statusGuru = strtolower($row['status'] ?? 'aktif'); // Default 'aktif' jika kosong
 
         return new Guru([
-            'nip'                   => $nip,
+            'niy'                   => $niy,
             'nama_lengkap'          => $row['nama_lengkap'] ?? '',
             'jenis_kelamin'         => $jenisKelamin,
             'tempat_lahir'          => $row['tempat_lahir'] ?? null,
@@ -87,7 +87,7 @@ class GuruImport implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            'nip'                   => ['nullable', 'max:255', Rule::unique('guru', 'nip')],
+            'niy'                   => ['nullable', 'max:255', Rule::unique('guru', 'niy')],
             'nama_lengkap'          => ['required', 'string', 'max:255'],
             'jenis_kelamin'         => ['required', Rule::in(['laki-laki', 'perempuan'])],
             'tempat_lahir'          => ['nullable', 'string', 'max:255'],
@@ -128,8 +128,8 @@ class GuruImport implements ToModel, WithHeadingRow, WithValidation
     public function customValidationMessages()
     {
         return [
-            'nip.max'                   => 'NIP maksimal :max karakter.',
-            'nip.unique'                => 'NIP ini sudah terdaftar di database.',
+            'niy.max'                   => 'niy maksimal :max karakter.',
+            'niy.unique'                => 'niy ini sudah terdaftar di database.',
 
             'nama_lengkap.required'     => 'Nama Lengkap wajib diisi.',
             'nama_lengkap.string'       => 'Nama Lengkap harus berupa teks.',

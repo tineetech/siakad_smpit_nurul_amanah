@@ -43,6 +43,10 @@ class AbsensiSiswaResource extends Resource
             return true;
         }
 
+        if ($user->isKepsek()) {
+            return true;
+        }
+
         // Guru hanya bisa melihat menu ini jika memiliki kelas_id di tabel guru
         if ($user->isGuru()) {
             $guru = Guru::where('user_id', $user->id)->first();
@@ -54,6 +58,7 @@ class AbsensiSiswaResource extends Resource
 
     public static function form(Forms\Form $form): Forms\Form
     {
+        $guru = Guru::where('user_id', Auth::user()->id)->first();
         return $form->schema([
             Forms\Components\DatePicker::make('tanggal_absensi')
                 ->required()
@@ -64,10 +69,18 @@ class AbsensiSiswaResource extends Resource
                 ->default(now()),
 
             Forms\Components\Select::make('siswa_id')
-                ->relationship('siswa', 'nama_lengkap')
+                ->options(
+                    Siswa::where('status', 'aktif')
+                        ->where('kelas_id', Auth::user()->role === "guru" ? $guru->kelas_id : null)
+                        ->get()
+                        ->mapWithKeys(function ($siswa) {
+                            return [$siswa->id => $siswa->nama_lengkap];
+                        })
+                )
                 ->searchable()
+                ->label("Siswa")
                 ->required()
-                ->hidden(fn() => Auth::user()->role === User::ROLE_SISWA),
+                ->hidden(fn () => Auth::user()->role === User::ROLE_SISWA),
 
             Forms\Components\Select::make('status_kehadiran')
                 ->options([
@@ -172,7 +185,7 @@ class AbsensiSiswaResource extends Resource
                     ->hidden(fn() => Auth::user()->role !== User::ROLE_SISWA),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                     ->hidden(fn($record) => !static::canEdit($record)),
             ])
@@ -191,8 +204,8 @@ class AbsensiSiswaResource extends Resource
             return $query->whereRaw('1=0');
         }
 
-        if (in_array($user->role, [User::ROLE_ADMIN, User::ROLE_TATA_USAHA])) {
-            return $query;
+        if (in_array($user->role, [User::ROLE_ADMIN, User::ROLE_KEPSEK, User::ROLE_TATA_USAHA])) {
+            return $query->orderBy('tanggal_absensi', 'desc');
         }
 
         if ($user->role === User::ROLE_GURU) {
@@ -206,8 +219,7 @@ class AbsensiSiswaResource extends Resource
             // Filter absensi hanya untuk siswa di kelas guru tersebut
             return $query->whereHas('siswa', function ($q) use ($guru) {
                 $q->where('kelas_id', $guru->kelas_id);
-            })
-                ->orderBy('tanggal_absensi', 'desc');
+            })->orderBy('tanggal_absensi', 'desc');
         }
 
         if ($user->role === User::ROLE_SISWA) {
@@ -273,6 +285,12 @@ class AbsensiSiswaResource extends Resource
             ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => false,
+                'create' => false,
+                'edit' => false,
+                'delete' => false,
+            ],
+            User::ROLE_KEPSEK => [
+                'viewAny' => true,
                 'create' => false,
                 'edit' => false,
                 'delete' => false,

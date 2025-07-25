@@ -14,6 +14,6 @@ class CreateKelas extends CreateRecord
     protected function afterCreate(): void
     {
         // Panggil metode syncEnrollments dari KelasResource
-        KelasResource::syncEnrollments($this->data, $this->record);
+        KelasResource::syncEnrollments($this->data, $this->record, 'create');
     }
 }

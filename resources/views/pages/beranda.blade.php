@@ -17,7 +17,7 @@
 
           <div class="hero-content">
 
-            <p class="section-subtitle">Bersama Kami Pasti Terpadu test</p>
+            <p class="section-subtitle">Bersama Kami Pasti Terpadu</p>
 
             <h2 class="h1 hero-title">Membentuk Generasi Islami Yang Cerdas</h2>
 
@@ -55,126 +55,6 @@
 
 
 
-      <!-- 
-        - #CATEGORY
-      -->
-
-      <section class="section category" aria-label="category">
-        <div class="container">
-
-          <p class="section-subtitle">SMPIT Nurul Amanah</p>
-
-          <h2 class="h2 section-title">Fasilitas Unggulan Kami</h2>
-
-          <ul class="grid-list">
-
-            <li>
-              <div class="category-card">
-
-                <div class="card-icon">
-                  <ion-icon name="briefcase-outline"></ion-icon>
-                </div>
-
-                <div>
-                  <h3 class="h3 card-title">
-                    <a href="#">Smart Classroom</a>
-                  </h3>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="category-card">
-
-                <div class="card-icon">
-                  <ion-icon name="file-tray-full-outline"></ion-icon>
-                </div>
-
-                <div>
-                  <h3 class="h3 card-title">
-                    <a href="#">Perpustakaan Interaktif</a>
-                  </h3>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="category-card">
-
-                <div class="card-icon">
-                  <ion-icon name="color-palette-outline"></ion-icon>
-                </div>
-
-                <div>
-                  <h3 class="h3 card-title">
-                    <a href="#">Laboratorium Sains & Komputer</a>
-                  </h3>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="category-card">
-
-                <div class="card-icon">
-                  <ion-icon name="layers-outline"></ion-icon>
-                </div>
-
-                <div>
-                  <h3 class="h3 card-title">
-                    <a href="#">Asrama Islami</a>
-                  </h3>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="category-card">
-
-                <div class="card-icon">
-                  <ion-icon name="laptop-outline"></ion-icon>
-                </div>
-
-                <div>
-                  <h3 class="h3 card-title">
-                    <a href="#">Area Olahraga & Ekstrakurikuler</a>
-                  </h3>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="category-card">
-
-                <div class="card-icon">
-                  <ion-icon name="thumbs-up-outline"></ion-icon>
-                </div>
-
-                <div>
-                  <h3 class="h3 card-title">
-                    <a href="#">Ruang Kreativitas & Komunitas</a>
-                  </h3>
-
-                </div>
-
-              </div>
-            </li>
-
-          </ul>
-
-        </div>
-      </section>
-
 
 
 
@@ -183,7 +63,7 @@
         - #ABOUT
       -->
 
-      <section class="section about" id="about" aria-label="about">
+      <section class="section about" style="padding-top: 100px" id="about" aria-label="about">
         <div class="container">
 
           <figure class="">

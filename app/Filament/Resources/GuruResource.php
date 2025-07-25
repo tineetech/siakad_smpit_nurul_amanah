@@ -27,11 +27,11 @@ class GuruResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('nip')
+            Forms\Components\TextInput::make('niy')
                 ->maxLength(255)
                 ->unique(ignoreRecord: true)
                 ->required() // Changed from nullable to required since we'll use it for email
-                ->label('NIP'),
+                ->label('NIY (Nomor Induk Yayasan)'),
             Forms\Components\TextInput::make('nama_lengkap')
                 ->required()
                 ->maxLength(255)
@@ -42,20 +42,16 @@ class GuruResource extends Resource
                 ->label('Jenis Kelamin'),
             Forms\Components\TextInput::make('tempat_lahir')
                 ->maxLength(255)
-                ->nullable()
+                ->required()
                 ->label('Tempat Lahir'),
             Forms\Components\DatePicker::make('tanggal_lahir')
-                ->nullable()
+                ->required()
                 ->label('Tanggal Lahir'),
             Forms\Components\Select::make('agama')
                 ->options([
                     'Islam' => 'Islam',
-                    'Kristen Protestan' => 'Kristen Protestan',
-                    'Kristen Katolik' => 'Kristen Katolik',
-                    'Hindu' => 'Hindu',
-                    'Buddha' => 'Buddha',
-                    'Konghucu' => 'Konghucu',
                 ])
+                ->default('Islam')
                 ->nullable()
                 ->label('Agama'),
             Forms\Components\Select::make('mata_pelajaran_id')
@@ -68,6 +64,21 @@ class GuruResource extends Resource
                 ->options(Kelas::pluck('nama', 'id'))
                 ->nullable()
                 ->searchable(),
+            Forms\Components\Select::make('jenjang_pendidikan')
+                ->label('Jenjang Pendidikan Terakhir')
+                ->options([
+                    'sd' => 'SD / MI',
+                    'smp' => 'SMP / MTs',
+                    'sma' => 'SMA / MA / SMK',
+                    'd1' => 'D1',
+                    'd2' => 'D2',
+                    'd3' => 'D3',
+                    's1' => 'S1 / Sarjana',
+                    's2' => 'S2 / Magister',
+                    's3' => 'S3 / Doktor',
+                ])
+                ->required()
+                ->placeholder('Pilih Jenjang Pendidikan'),
             Forms\Components\Select::make('status')
                 ->options(['aktif' => 'Aktif', 'non-aktif' => 'Non-aktif'])
                 ->required()
@@ -80,10 +91,10 @@ class GuruResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nip')
+                Tables\Columns\TextColumn::make('niy')
                     ->searchable()
                     ->sortable()
-                    ->label('NIP'),
+                    ->label('NIY'),
                 Tables\Columns\TextColumn::make('nama_lengkap')
                     ->searchable()
                     ->sortable()

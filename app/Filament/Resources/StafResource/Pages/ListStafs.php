@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class ListStafs extends ListRecords
 {
     protected static string $resource = StafResource::class;
+    protected static ?string $title = 'Daftar Staff';
 
     protected function getHeaderActions(): array
     {

@@ -51,10 +51,16 @@
                     <select id="gelombang_id" name="gelombang_id" required class="w-full bg-white shadow-sm border p-2 rounded"></select>
                 </div>
 
+                {{-- NIK --}}
+                <div>
+                    <label class="block text-sm font-medium">NIK <span class="text-red-500">*</span></label>
+                    <input type="text" name="nik" required placeholder="NIK Siswa.." maxlength="16" minlength="16"  class="w-full bg-white shadow-sm border p-2 rounded">
+                </div>
+
                 {{-- NISN --}}
                 <div>
                     <label class="block text-sm font-medium">NISN <span class="text-red-500">*</span></label>
-                    <input type="text" name="nisn" required placeholder="NISN" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="text" name="nisn" required placeholder="NISN" maxlength="10" minlength="10" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Nama Lengkap --}}
@@ -86,7 +92,7 @@
                 </div>
 
                 {{-- Alamat --}}
-                <div class="md:col-span-2">
+                <div class="">
                     <label class="block text-sm font-medium">Alamat Lengkap <span class="text-red-500">*</span></label>
                     <textarea name="alamat" required placeholder="Alamat Lengkap" class="w-full bg-white shadow-sm border p-2 rounded"></textarea>
                 </div>
@@ -94,7 +100,7 @@
                 {{-- Nomor HP --}}
                 <div>
                     <label class="block text-sm font-medium">Nomor HP Siswa <span class="text-red-500">*</span></label>
-                    <input type="number" name="nomor_hp_siswa" required placeholder="Nomor HP Siswa" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="nomor_hp_siswa" required placeholder="Nomor HP Siswa" maxlength="15" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Asal Sekolah --}}
@@ -177,7 +183,7 @@
                 </div>
             </div>
 
-            <h2 class="text-lg font-semibold mt-8">Informasi Ayah</h2>
+            <h2 class="text-lg font-semibold mt-8">Data Ayah</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm">Nama Ayah <span class="text-red-500">*</span></label>
@@ -231,11 +237,11 @@
                 </div>
                 <div>
                     <label class="block text-sm">Nomor HP Ayah <span class="text-red-500">*</span></label>
-                    <input type="number" name="nomor_hp_ayah" required placeholder="Nomor HP Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="nomor_hp_ayah" maxlength="15" required placeholder="Nomor HP Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
             </div>
 
-            <h2 class="text-lg font-semibold mt-8">Informasi Ibu</h2>
+            <h2 class="text-lg font-semibold mt-8">Data Ibu</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm">Nama Ibu <span class="text-red-500">*</span></label>
@@ -289,7 +295,7 @@
                 </div>
                 <div>
                     <label class="block text-sm">Nomor HP Ibu <span class="text-red-500">*</span></label>
-                    <input type="number" name="nomor_hp_ibu" required placeholder="Nomor HP Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="nomor_hp_ibu" maxlength="15" required placeholder="Nomor HP Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
             </div>
 

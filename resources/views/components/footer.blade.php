@@ -36,11 +36,11 @@
               </a>
             </li> --}}
 
-            <li>
+            {{-- <li>
               <a href="https://linktr.ee/PesantrenTerpaduNurulAmanah" class="social-link">
                 <ion-icon name="globe-outline"></ion-icon>
               </a>
-            </li>
+            </li> --}}
 
           </ul>
 
@@ -158,13 +158,13 @@
           <li class="footer-item">
             <ion-icon name="call" aria-hidden="true"></ion-icon>
 
-            <a href="https://wa.me/~" class="footer-link">+ 6281324198827</a>
+            <a href="https://wa.me/081909621313" class="footer-link">+ 6281909621313</a>
           </li>
 
           <li class="footer-item">
             <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
 
-            <a href="mailto:contact@smp_ptna@yahoo.co.id" class="footer-link">smp_ptna@yahoo.co.id</a>
+            <a href="mailto:contact@smpitnurulamanah@gmail.com" class="footer-link">smpitnurulamanah@gmail.com</a>
           </li>
 
         </ul>

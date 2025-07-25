@@ -26,7 +26,7 @@ class StafExport implements FromCollection, WithHeadings, ShouldAutoSize, WithSt
             $counter++;
             return [
                 'No'                => $counter,
-                'NIP'               => ' ' . (string) ($staf->nip ?? '-'), // Tambahkan spasi agar dianggap teks di Excel
+                'NIY'               => ' ' . (string) ($staf->niy ?? '-'), // Tambahkan spasi agar dianggap teks di Excel
                 'Nama Lengkap'      => $staf->nama_lengkap,
                 'Jabatan'           => $staf->jabatan ?? '-',
                 'Jenis Kelamin'     => $staf->jenis_kelamin,
@@ -46,7 +46,7 @@ class StafExport implements FromCollection, WithHeadings, ShouldAutoSize, WithSt
     {
         return [
             'No',
-            'NIP',
+            'NIY',
             'Nama Lengkap',
             'Jabatan',
             'Jenis Kelamin',

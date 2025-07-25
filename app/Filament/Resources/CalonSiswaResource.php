@@ -11,13 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CalonSiswa;
 use App\Models\Gelombang;
-// use App\Exports\CalonSiswaExport; // Tidak digunakan di sini, bisa dihapus jika tidak ada aksi import/export
-// use App\Imports\CalonSiswaImport; // Tidak digunakan di sini, bisa dihapus jika tidak ada aksi import/export
 use Carbon\Carbon;
 use Filament\{Tables, Forms, Resources\Resource};
 use Filament\Forms\Components\{Select, TextInput, DatePicker, DateTimePicker, FileUpload, Textarea, Fieldset, Section}; // Tambahkan Textarea, Fieldset, Section
 use Filament\Tables\Actions;
-// use Maatwebsite\Excel\Facades\Excel; // Tidak digunakan di sini
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
@@ -51,7 +48,7 @@ class CalonSiswaResource extends Resource
                         ->label('Nomor Pendaftaran')
                         ->required()
                         ->unique(ignoreRecord: true) // Pastikan nomor pendaftaran unik
-                        ->maxLength(50) // Sesuaikan dengan DB
+                        ->maxLength(50)
                         ->placeholder('Nomor pendaftaran unik'),
                     DateTimePicker::make('tanggal_pendaftaran')
                         ->label('Tanggal Daftar')
@@ -63,10 +60,21 @@ class CalonSiswaResource extends Resource
                 ])->columns(3), // Mengatur layout kolom dalam Section
 
             Section::make('Data Pribadi Siswa')
-                ->description('Informasi lengkap mengenai calon siswa.')
+                ->description('Data Calon siswa.')
                 ->schema([
-                    TextInput::make('nisn')
+                    TextInput::make('nik')
+                        ->label('NIK')
+                        ->nullable()
+                        ->required()
+                        ->unique(ignoreRecord: true)
+                        ->numeric() // Pastikan hanya angka
+                        ->placeholder('Isi NIK siswa')
+                        ->minLength(16)
+                        ->maxLength(16),
+                        TextInput::make('nisn')
                         ->label('NISN')
+                        ->minLength(10)
+                        ->maxLength(10)
                         ->nullable()
                         ->numeric() // Pastikan hanya angka
                         ->maxLength(255)
@@ -188,7 +196,7 @@ class CalonSiswaResource extends Resource
                         ->placeholder('Riwayat penyakit yang pernah diderita'),
                 ])->columns(2), // Atur layout kolom untuk section ini
 
-            Section::make('Informasi Orang Tua (Ayah)')
+            Section::make('Data Orang Tua (Ayah)')
                 ->description('Data detail mengenai Ayah calon siswa.')
                 ->schema([
                     TextInput::make('nama_ayah')
@@ -241,7 +249,7 @@ class CalonSiswaResource extends Resource
                         ->placeholder('0812xxxx'),
                 ])->columns(2),
 
-            Section::make('Informasi Orang Tua (Ibu)')
+            Section::make('Data Orang Tua (Ibu)')
                 ->description('Data detail mengenai Ibu calon siswa.')
                 ->schema([
                     TextInput::make('nama_ibu')

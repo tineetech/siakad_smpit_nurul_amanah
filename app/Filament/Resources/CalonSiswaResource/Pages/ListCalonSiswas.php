@@ -87,7 +87,7 @@ class ListCalonSiswas extends ListRecords
             //                 ->send();
             //         }
             //     }),
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Calon Siswa'),
         ];
     }
 }

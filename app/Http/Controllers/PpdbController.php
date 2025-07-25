@@ -19,6 +19,7 @@ class PpdbController extends Controller
     {
         $validated = $request->validate([
             'gelombang_id' => 'required|exists:gelombang,id',
+            'nik' => 'required|unique:calon_siswa,nik',
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:laki-laki,perempuan',
             // Validasi untuk file
@@ -43,8 +44,6 @@ class PpdbController extends Controller
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 // Simpan file ke disk 'public'
                 $paths[$field] = $file->storeAs($folder, $fileName, 'public');
-                // Atau, jika Anda ingin Laravel otomatis menamai file dengan hash:
-                // $paths[$field] = $file->store($folder, 'public');
             }
         }
         $gelombang = Gelombang::where('id', $request->gelombang_id)->whereColumn('kouta_terisi', '<', 'kouta')->first();
@@ -58,6 +57,7 @@ class PpdbController extends Controller
             'gelombang_id' => $request->gelombang_id,
             'nomor_pendaftaran' => $nomor_pendaftaran,
             'nisn' => $request->nisn,
+            'nik' => $request->nik,
             'nama_lengkap' => $request->nama_lengkap,
             'profile_picture' => $paths['profile_picture'] ?? null,
             'kartu_keluarga' => $paths['kartu_keluarga'] ?? null,

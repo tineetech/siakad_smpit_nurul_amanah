@@ -16,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -125,7 +126,12 @@ class PembayaranSppResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal_pembayaran')->date(),
                 Tables\Columns\TextColumn::make('teller.name')->label('Teller'),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('siswa_id')
+                    ->label('Siswa')
+                    ->options(Siswa::pluck('nama_lengkap', 'id'))
+                    ->placeholder('Semua Siswa'),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),

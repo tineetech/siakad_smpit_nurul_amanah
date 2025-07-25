@@ -1,0 +1,11 @@
+[26-Jun-2025 05:08:44 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 7.2.34. in /home/smpitnur/public_html/vendor/composer/platform_check.php on line 28
+[30-Jun-2025 16:25:17 UTC] PHP Warning:  require(/home/smpitnur/public_html/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/smpitnur/public_html/public/index.php on line 14
+[30-Jun-2025 16:25:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/smpitnur/public_html/public/../vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/smpitnur/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/smpitnur/public_html/public/index.php on line 14
+[30-Jun-2025 16:25:18 UTC] PHP Warning:  require(/home/smpitnur/public_html/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/smpitnur/public_html/public/index.php on line 14
+[30-Jun-2025 16:25:18 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/smpitnur/public_html/public/../vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/smpitnur/public_html/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/smpitnur/public_html/public/index.php on line 14

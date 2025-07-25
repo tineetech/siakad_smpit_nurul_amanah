@@ -74,7 +74,7 @@
             @else
                 <a href="{{ '/siakad' }}" class="header-action-btn login-btn">
                     <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
-                    <span class="span">Login / Register</span>
+                    <span class="span">Login</span>
                 </a>
             @endif
 

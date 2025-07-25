@@ -18,6 +18,7 @@ use Illuminate\Support\HtmlString;
 class ListSiswas extends ListRecords
 {
     protected static string $resource = SiswaResource::class;
+    protected static ?string $title = 'Daftar Siswa';
 
     protected function getHeaderActions(): array
     {

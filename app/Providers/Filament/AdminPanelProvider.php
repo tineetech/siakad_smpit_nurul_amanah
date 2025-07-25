@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\Auth\CustomLogin;
 use App\Filament\Pages\Auth\EditProfile;
+use Filament\Navigation\NavigationItem;
 use App\Filament\Widgets\AbsensiChart;
 use App\Filament\Widgets\CalonSiswaChart;
 use App\Filament\Widgets\StatsOverview;
@@ -80,6 +81,12 @@ class AdminPanelProvider extends PanelProvider
                 'POS SPP',       // Ini akan muncul ketiga
                 'Portal SPMB',
                 'Pengaturan',
+            ])
+            ->navigationItems([
+                NavigationItem::make('Kembali Ke Home')
+                    ->url('/')
+                    ->icon('heroicon-o-globe-alt')
+                    ->sort(99)
             ])
             ->defaultThemeMode(ThemeMode::Light)
             ->darkMode(false)
