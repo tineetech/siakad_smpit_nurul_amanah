@@ -187,6 +187,7 @@ class KelasResource extends Resource
         $selectedSemesterId = $data['selected_semester_id'] ?? null;
         $selectedKurikulumId = $data['selected_kurikulum_id'] ?? null;
         $enrolledSiswaIds = $data['enrolled_siswa'] ?? [];
+        $guruId = $data['guru_id'] ?? null;
 
         if (!$selectedSemesterId || !$selectedKurikulumId) {
             Notification::make()
@@ -197,6 +198,10 @@ class KelasResource extends Resource
             return;
         }
 
+        Guru::where('id', $guruId)->update([
+            'kelas_id' => $kelas->id,
+        ]);
+
         $kelas->enrollments()
             ->where('semester_id', $selectedSemesterId)
             ->where('kurikulum_id', $selectedKurikulumId)
@@ -205,18 +210,33 @@ class KelasResource extends Resource
 
         
         foreach ($enrolledSiswaIds as $siswaId) {
+            $findEnrollment = Enrollment::where('siswa_id', $siswaId)->first();
             if ($mode === 'edit') {
-                Enrollment::where('siswa_id', $siswaId)->update([
-                    'kelas_id'      => $kelas->id,
-                    'siswa_id'      => $siswaId,
-                    'guru_id'       => null,
-                    'semester_id'   => $selectedSemesterId,
-                    'kurikulum_id'  => $selectedKurikulumId,
-                    'nama'          => 'Enrollment Siswa',
-                ]);
-                Siswa::where('id', $siswaId)->update([
-                    'kelas_id' => $kelas->id
-                ]);
+                if (!$findEnrollment) {
+                    Enrollment::create([
+                        'kelas_id'      => $kelas->id,
+                        'siswa_id'      => $siswaId,
+                        'guru_id'       => null,
+                        'semester_id'   => $selectedSemesterId,
+                        'kurikulum_id'  => $selectedKurikulumId,
+                        'nama'          => 'Enrollment Siswa',
+                    ]);
+                    Siswa::where('id', $siswaId)->update([
+                        'kelas_id' => $kelas->id
+                    ]);
+                } else {
+                    Enrollment::where('siswa_id', $siswaId)->update([
+                        'kelas_id'      => $kelas->id,
+                        'siswa_id'      => $siswaId,
+                        'guru_id'       => null,
+                        'semester_id'   => $selectedSemesterId,
+                        'kurikulum_id'  => $selectedKurikulumId,
+                        'nama'          => 'Enrollment Siswa',
+                    ]);
+                    Siswa::where('id', $siswaId)->update([
+                        'kelas_id' => $kelas->id
+                    ]);
+                }
             } else if ($mode === 'create') {
                 Enrollment::create([
                     'kelas_id'      => $kelas->id,

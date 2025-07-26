@@ -52,7 +52,7 @@ Berikut detail informasi kamu:
 ⏰ Diterima     : *{$waktuDiterima}*
 ────────────────────────
 
-Sehubungan dengan telah diterimanya putra/putri Bapak/Ibu dalam proses pendaftaran, kami mengundang Bapak/Ibu untuk hadir dalam kegiatan wawancara orang tua yang merupakan bagian dari tahapan seleksi berikutnya pada hari senin minggu ini/besok.
+Sehubungan dengan telah diterimanya putra/putri Bapak/Ibu dalam proses pendaftaran, kami mengundang Bapak/Ibu untuk hadir dalam kegiatan wawancara orang tua yang merupakan bagian dari tahapan seleksi berikutnya pada hari senin minggu ini/depan.
 
 📞 Hubungi admin jika ada pertanyaan.
 Terima kasih 🙏

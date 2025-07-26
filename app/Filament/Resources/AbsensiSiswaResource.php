@@ -49,7 +49,7 @@ class AbsensiSiswaResource extends Resource
 
         // Guru hanya bisa melihat menu ini jika memiliki kelas_id di tabel guru
         if ($user->isGuru()) {
-            $guru = Guru::where('user_id', $user->id)->first();
+            $guru = Guru::where('user_id',  $user->id)->first();
             return $guru && !is_null($guru->kelas_id);
         }
 
