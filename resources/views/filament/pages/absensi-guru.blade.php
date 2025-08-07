@@ -8,7 +8,7 @@
         <div class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow">
             <div class="mb-4 text-center">
                 <p class="text-lg font-semibold">{{ $nama_lengkap }}</p>
-                <p class="text-gray-600">NIP: {{ $nip }}</p>
+                <p class="text-gray-600">NIY: {{ $niy }}</p>
             </div>
             
             <div class="p-4 bg-white border border-gray-200 rounded">

@@ -90,7 +90,7 @@ class ListStafs extends ListRecords
                     }
                 }),
 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Staf'),
         ];
     }
 }

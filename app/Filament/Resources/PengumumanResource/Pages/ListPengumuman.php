@@ -22,7 +22,7 @@ class ListPengumuman extends ListRecords
     protected function getHeaderActions(): array
     {
         $actions = [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Pengumuman'),
         ];
 
         /** @var \App\Models\User $user */

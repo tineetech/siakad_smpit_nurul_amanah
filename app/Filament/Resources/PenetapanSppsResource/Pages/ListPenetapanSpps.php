@@ -48,7 +48,7 @@ class ListPenetapanSpps extends ListRecords
             //         }
             //     }),
 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Penetapan SPP'),
         ];
     }
 }

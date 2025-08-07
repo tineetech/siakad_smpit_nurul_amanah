@@ -35,7 +35,7 @@ class ListPembayaranSpps extends ListRecords
             //         $this->notify('success', 'Import berhasil!');
             //     }),
             
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Pembayaran SPP'),
 
         ];
     }

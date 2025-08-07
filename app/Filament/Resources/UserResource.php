@@ -128,7 +128,7 @@ class UserResource extends Resource
                         'siswa' => 'Siswa',
                         'guru' => 'Guru',
                         'tata_usaha' => 'Tata Usaha',
-                        'staff_ppdb' => 'Staff PPDB',
+                        'staff_ppdb' => 'Panitia PPDB',
                         'staff' => 'Staff',
                         'kepala_sekolah' => 'Kepala Sekolah',
                     ]),

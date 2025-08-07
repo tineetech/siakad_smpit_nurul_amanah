@@ -89,7 +89,7 @@ class ListMataPelajarans extends ListRecords
                     }
                 }),
 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Mata Pelajaran'),
         ];
     }
 }

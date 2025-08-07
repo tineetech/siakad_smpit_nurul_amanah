@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\LaporanNilaiSiswaResource\Pages;
+use App\Models\Guru;
+use App\Models\Nilai;
+use App\Models\Semester;
+use App\Models\Siswa;
+use App\Models\MataPelajaran;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Auth;
+
+class LaporanNilaiSiswaResource extends Resource
+{
+    protected static ?string $model = Nilai::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationGroup = 'Kesiswaan';
+    protected static ?string $navigationLabel = 'Raport';
+
+    // Kita tidak akan menggunakan form untuk membuat/mengedit nilai di resource ini
+    // karena fokusnya adalah laporan. Kita bisa membiarkannya kosong atau menghapusnya jika tidak dibutuhkan.
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                // Field form bisa kosong atau tidak digunakan jika resource ini hanya untuk melihat laporan
+                // Namun, kita bisa tambahkan filter di bagian tabel
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('siswa.nama_lengkap')
+                    ->label('Nama Siswa')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('semester.nama')
+                    ->label('Semester')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('kelas.nama')
+                    ->label('Kelas')
+                    ->sortable()
+                    ->searchable(),
+            
+                // Contoh: Menampilkan rata-rata nilai akhir per siswa per semester
+                TextColumn::make('nilai_akhir')
+                    ->label('Nilai Akhir')
+                    ->numeric()
+                    // ->summarize([
+                    //     Tables\Columns\Summarizers\Average::make()
+                    //         ->label('Rata-rata Kelas') // Ini akan menghitung rata-rata dari kolom nilai_akhir
+                    // ]),
+            ])
+            ->filters([
+                SelectFilter::make('siswa_id')
+                    ->label('Filter Siswa')
+                    ->options(Siswa::all()->pluck('nama_lengkap', 'id'))
+                    ->searchable(),
+                SelectFilter::make('semester_id')
+                    ->label('Filter Semester')
+                    ->options(Semester::all()->pluck('nama', 'id'))
+                    ->searchable(),
+                SelectFilter::make('kelas_id')
+                    ->label('Filter Kelas')
+                    ->options(function () {
+                        // Pastikan model Kelas ada dan memiliki kolom 'nama_kelas'
+                        return \App\Models\Kelas::all()->pluck('nama', 'id');
+                    })
+                    ->searchable(),
+            ])
+            ->actions([
+                Tables\Actions\Action::make('export_raport')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn (Model $record) => route('export.raport', [
+                        'siswa_id' => $record->siswa_id,
+                        'semester_id' => $record->semester_id,
+                    ]))
+                    ->openUrlInNewTab(),
+            ])
+            ->bulkActions([
+                //
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->select('siswa_id', 'semester_id', 'kelas_id')
+                    ->selectRaw('AVG(nilai_akhir) as nilai_akhir')
+                    // Tambahkan ini: Ambil ID minimal dari grup untuk dijadikan kunci record
+                    ->addSelect(\DB::raw('MIN(id) as id'))
+                    ->groupBy('siswa_id', 'semester_id', 'kelas_id');
+            })
+            ->defaultSort('siswa.nama_lengkap', 'asc');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+    
+        if ($user->isGuru()) {
+            $guru = Guru::where('user_id', $user->id)->first();
+            if (!$guru->kelas_id) {
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListLaporanNilaiSiswas::route('/'),
+        ];
+    }
+
+    // Metode ini penting untuk preload relasi agar tidak N+1 query
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['siswa', 'semester', 'kelas']);
+    }
+
+    // Metode ini untuk menonaktifkan tombol buat baru di halaman list jika tidak diperlukan
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+}

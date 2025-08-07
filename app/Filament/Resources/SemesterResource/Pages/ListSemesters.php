@@ -89,7 +89,7 @@ class ListSemesters extends ListRecords
                     }
                 }),
 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Semester'),
         ];
     }
 }

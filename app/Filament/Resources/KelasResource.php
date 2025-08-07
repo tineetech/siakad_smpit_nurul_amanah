@@ -263,6 +263,8 @@ class KelasResource extends Resource
     // === PRIVILEGE HERE ===
     // ======================
 
+    
+
     public static function canViewAny(): bool
     {
         return self::getCurrentUserRolePermissions('viewAny');

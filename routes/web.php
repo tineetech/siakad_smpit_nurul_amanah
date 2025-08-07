@@ -155,5 +155,9 @@ Route::get('/jadwal', function () {
     // return view('jadwal-pdf', $data);
 })->name('export-jadwal-dummy');
 
+Route::get('/export/raport', [\App\Http\Controllers\RaportExportController::class, 'export'])->name('export.raport');
+
+
+
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 

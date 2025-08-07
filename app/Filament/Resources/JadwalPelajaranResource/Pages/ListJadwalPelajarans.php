@@ -71,7 +71,7 @@ class ListJadwalPelajarans extends ListRecords
                     }, 'jadwal-kelas-' . \Illuminate\Support\Str::slug($kelas->nama) . '.pdf');
                 }),
             // --- Akhir Aksi Export Jadwal ---
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Jadwal Pelajaran'),
         ];
     }
 }

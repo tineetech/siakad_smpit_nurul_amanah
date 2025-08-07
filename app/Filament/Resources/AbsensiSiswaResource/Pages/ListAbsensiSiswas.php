@@ -36,7 +36,7 @@ class ListAbsensiSiswas extends ListRecords
                     }
                 }),
 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Absensi Siswa'),
         ];
     }
 }

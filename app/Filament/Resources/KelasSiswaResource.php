@@ -140,6 +140,20 @@ class KelasSiswaResource extends Resource
             ]);
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+    
+        if ($user->isGuru()) {
+            $guru = Guru::where('user_id', $user->id)->first();
+            if (!$guru->kelas_id) {
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();

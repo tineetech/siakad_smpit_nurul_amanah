@@ -88,7 +88,7 @@ class ListPengaturanSpps extends ListRecords
                     }
                 }),
 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Pengaturan SPP'),
         ];
     }
 }

@@ -22,16 +22,23 @@ class EditProfile extends BaseEditProfile
                     ->maxSize(1024)
                     ->nullable(),
 
-                TextInput::make('phone_number')
-                    ->nullable()
-                    ->maxLength(255),
+                $this->getNameFormComponent(),
 
                 TextInput::make('email')
                     ->nullable()
                     ->email()
                     ->maxLength(255),
+                
+                TextInput::make('phone_number')
+                    ->nullable()
+                    ->maxLength(255),
 
-                $this->getNameFormComponent(),
+
+                TextInput::make('address')
+                    ->nullable()
+                    ->placeholder('Alamat..')
+                    ->maxLength(255),
+                    
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);

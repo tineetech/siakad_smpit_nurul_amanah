@@ -19,7 +19,7 @@ class AbsensiGuru extends Page
 
     // Use primitive types for Livewire compatibility
     public string $namaLengkap = '';
-    public string $nip = '';
+    public string $niy = '';
     public string $qrSvg = '';
 
     public static function canAccess(): bool
@@ -33,7 +33,7 @@ class AbsensiGuru extends Page
         $guru = Guru::where('user_id', Auth::id())->firstOrFail();
 
         $this->namaLengkap = $guru->nama_lengkap;
-        $this->nip = $guru->nip;
+        $this->niy = $guru->niy;
 
         // Tambahkan hash dan type agar validasi backend cocok
         $hash = md5($guru->id . config('app.key'));
@@ -53,7 +53,7 @@ class AbsensiGuru extends Page
     {
         return [
             'nama_lengkap' => 'Guru '. $this->namaLengkap,
-            'nip' => $this->nip,
+            'niy' => $this->niy,
             'qrSvg' => $this->qrSvg
         ];
     }

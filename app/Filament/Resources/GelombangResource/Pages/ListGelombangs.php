@@ -90,7 +90,7 @@ class ListGelombangs extends ListRecords
                     }
                 }),
                 
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Data Gelombang'),
         ];
     }
 }
