@@ -82,9 +82,11 @@ class JadwalPelajaranResource extends Resource
                     ->required(),
 
                 TimePicker::make('jam_mulai')
+                    ->withoutSeconds()
                     ->required(),
-
+                    
                 TimePicker::make('jam_selesai')
+                    ->withoutSeconds()
                     ->required(),
             ]);
     }
@@ -105,6 +107,10 @@ class JadwalPelajaranResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('mataPelajaran.nama')
                     ->label('Mata Pelajaran')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('mataPelajaran.gurus.nama_lengkap')
+                    ->label('Guru Mapel')
+                    ->default('-')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('hari')
                     ->label('Hari')
@@ -152,7 +158,7 @@ class JadwalPelajaranResource extends Resource
     
         if ($user->isGuru()) {
             $guru = Guru::where('user_id', $user->id)->first();
-            if (!$guru->kelas_id) {
+            if (empty($guru->kelas_id)) {
                 return false;
             }
             return true;

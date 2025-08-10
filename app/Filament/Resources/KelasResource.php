@@ -153,6 +153,9 @@ class KelasResource extends Resource
                     ->label('Wali Kelas')
                     ->options(Guru::pluck('nama_lengkap', 'id'))
                     ->placeholder('Semua Wali Kelas'),
+                SelectFilter::make('kurikulum')
+                    ->label('Kurikulum')
+                    ->options(Kurikulum::pluck('nama', 'id')),
                 SelectFilter::make('tingkat')
                     ->options(Kelas::distinct()->pluck('tingkat', 'tingkat')->filter()->toArray())
                     ->placeholder('Semua Tingkat'),

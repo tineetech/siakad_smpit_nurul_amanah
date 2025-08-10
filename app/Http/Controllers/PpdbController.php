@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage; // Tambahkan ini
 class PpdbController extends Controller
 {
     public function index() {
-        return view('pages.ppdb');
+        return view('pages.spmb');
     }
 
     public function store(Request $request)
@@ -39,7 +39,7 @@ class PpdbController extends Controller
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 // Nama folder di dalam storage/app/public
-                $folder = 'ppdb/' . $field;
+                $folder = 'spmb/' . $field;
                 // Nama file unik (misalnya, timestamp_originalfilename.ext)
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 // Simpan file ke disk 'public'
@@ -111,9 +111,9 @@ class PpdbController extends Controller
 
         if (!$calonSiswa) {
             // Handle case where registration number is not found
-            return redirect()->route('ppdb.index')->with('error', 'Nomor pendaftaran tidak ditemukan.');
+            return redirect()->route('spmb.index')->with('error', 'Nomor pendaftaran tidak ditemukan.');
         }
 
-        return view('pages.ppdb_success', compact('calonSiswa'));
+        return view('pages.spmb_success', compact('calonSiswa'));
     }
 }

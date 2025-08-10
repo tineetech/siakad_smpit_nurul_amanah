@@ -2,44 +2,46 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PengaturanSppResource\Pages;
+use App\Filament\Resources\PengaturanPembayaranResource\Pages;
+use App\Filament\Resources\PengaturanPembayaranResource\RelationManagers;
+use App\Models\PengaturanPembayaran;
 use App\Models\PengaturanSpp;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
-class PengaturanSppResource extends Resource
+class PengaturanPembayaranResource extends Resource
 {
     protected static ?string $model = PengaturanSpp::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $navigationGroup = 'POS SPP';
-    protected static ?string $navigationLabel = 'Pengaturan SPP';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationGroup = 'POS Pembayaran';
+    protected static ?string $navigationLabel = 'Pengaturan Pembayaran';
     protected static ?int $navigationSort = 1;
 
-
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nama')
-                    ->label('Nama Pengaturan SPP')
+                    ->label('Nama Pengaturan Pembayaran')
                     ->required()
                     ->placeholder('Masukan nama SPP')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('jumlah')
-                    ->label('Jumlah SPP Default')
+                    ->label('Jumlah tagihan')
                     ->numeric()
                     ->prefix('Rp')
                     ->inputMode('decimal')
-                    ->placeholder('Masukan jumlah SPP')
+                    ->placeholder('Masukan jumlah')
                     ->required(),
                 Forms\Components\DatePicker::make('tanggal_mulai')
                     ->label('Tanggal Mulai Berlaku')
@@ -55,7 +57,7 @@ class PengaturanSppResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
-                    ->label('Nama Pengaturan SPP')
+                    ->label('Nama Tagihan')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jumlah')
@@ -103,12 +105,12 @@ class PengaturanSppResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPengaturanSpps::route('/'),
-            'create' => Pages\CreatePengaturanSpp::route('/create'),
-            'edit' => Pages\EditPengaturanSpp::route('/{record}/edit'),
+            'index' => Pages\ListPengaturanPembayarans::route('/'),
+            'create' => Pages\CreatePengaturanPembayaran::route('/create'),
+            'edit' => Pages\EditPengaturanPembayaran::route('/{record}/edit'),
         ];
     }
-
+    
     public static function canViewAny(): bool
     {
         return self::getCurrentUserRolePermissions('viewAny');

@@ -54,7 +54,7 @@ class ListJadwalPelajarans extends ListRecords
                         $semesterObject = $jadwal->first()->semester;
                     }
                     if (!$semesterObject) {
-                        $semesterObject = Semester::first(); // Ambil semester pertama sebagai default jika tidak ada jadwal ditemukan
+                        $semesterObject = Semester::first();
                     }
 
                     $viewData = [
@@ -62,7 +62,6 @@ class ListJadwalPelajarans extends ListRecords
                         'jadwal' => $jadwal,
                         'semester' => $semesterObject,
                     ];
-                    // dd($viewData);
 
                     $pdf = Pdf::loadView('jadwal-pdf', $viewData);
 

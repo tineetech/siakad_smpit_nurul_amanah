@@ -16,6 +16,7 @@ use Filament\Forms\Components\Placeholder;
 class ListPengaturanSpps extends ListRecords
 {
     protected static string $resource = PengaturanSppResource::class;
+    protected static ?string $title = "Pengaturan Pembayaran";
 
     protected function getHeaderActions(): array
     {

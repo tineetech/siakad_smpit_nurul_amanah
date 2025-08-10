@@ -25,7 +25,7 @@ class LaporanNilaiSiswaResource extends Resource
     protected static ?string $model = Nilai::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-    protected static ?string $navigationGroup = 'Kesiswaan';
+    protected static ?string $navigationGroup = 'Kesiswaan'; 
     protected static ?string $navigationLabel = 'Raport';
 
     // Kita tidak akan menggunakan form untuk membuat/mengedit nilai di resource ini
@@ -108,15 +108,15 @@ class LaporanNilaiSiswaResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         /** @var \App\Models\User $user */
-        $user = Auth::user();
+        // $user = Auth::user();
     
-        if ($user->isGuru()) {
-            $guru = Guru::where('user_id', $user->id)->first();
-            if (!$guru->kelas_id) {
-                return false;
-            }
-            return true;
-        }
+        // if ($user->isGuru()) {
+        //     $guru = Guru::where('user_id', $user->id)->first();
+        //     if (empty($guru->kelas_id)) {
+        //         return false;
+        //     }
+        //     return true;
+        // }
         return true;
     }
 
@@ -137,7 +137,23 @@ class LaporanNilaiSiswaResource extends Resource
     // Metode ini penting untuk preload relasi agar tidak N+1 query
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['siswa', 'semester', 'kelas']);
+        $query = parent::getEloquentQuery()->with(['siswa', 'semester', 'kelas']);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->isSiswa()) {
+            $siswa = \App\Models\Siswa::where('user_id', $user->id)->first();
+
+            if ($siswa) {
+                $query->where('siswa_id', $siswa->id);
+            } else {
+                // Jika tidak ada data siswa, kembalikan query kosong
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        return $query;
     }
 
     // Metode ini untuk menonaktifkan tombol buat baru di halaman list jika tidak diperlukan

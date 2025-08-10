@@ -26,11 +26,19 @@ use Illuminate\Support\Facades\Auth;
 class PembayaranSppResource extends Resource
 {
     protected static ?string $model = PembayaranSpp::class;
-    protected static ?string $navigationGroup = 'POS SPP';
+    protected static ?string $navigationGroup = 'POS Pembayaran';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $label = 'Pembayaran SPP';
-    protected static ?string $pluralLabel = 'Pembayaran SPP';
+    protected static ?string $label = 'Pembayaran';
+    protected static ?string $pluralLabel = 'Pembayaran';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (Auth::user()->role === 'siswa') {
+            return false;
+        }
+        return true;
+    }
 
     public static function form(Form $form): Form
     {
@@ -49,6 +57,7 @@ class PembayaranSppResource extends Resource
                 ->required()
                 ->searchable()
                 ->reactive()
+                ->default(request()->get('penetapan_id')) // ← default dari URL
                 ->afterStateUpdated(function ($state, callable $set) {
                     $penetapan = PenetapanSpps::with('siswa')->find($state);
                     if ($penetapan) {
@@ -61,7 +70,8 @@ class PembayaranSppResource extends Resource
                 ->options(Siswa::pluck('nama_lengkap', 'id'))
                 ->disabled()
                 ->dehydrated(true)
-                ->required(),
+                ->required()
+                ->default(request()->get('siswa_id')),
 
             Forms\Components\TextInput::make('jumlah_dibayar')
                 ->label('Jumlah Dibayar')
@@ -96,12 +106,19 @@ class PembayaranSppResource extends Resource
                     'sebagian_dibayar' => 'Sebagian Dibayar',
                     'belum_dibayar' => 'Belum Dibayar',
                 ])
-                ->default('lunas')
+                ->default(Auth::user()->role === 'siswa' ? 'sebagian_dibayar' : 'lunas')
+                ->visible(fn ($record) => 
+                    Auth::user()->role !== 'siswa'
+                )
                 ->required(),
 
             Forms\Components\Select::make('teller_user_id')
-                ->label('Petugas/Teller')
-                ->options(User::where('role', 'tata_usaha')->pluck('name', 'id'))
+                ->label(Auth::user()->role === 'siswa' ? 'Dibayar oleh' : 'Petugas/Teller')
+                ->options(Auth::user()->role === 'siswa' ? User::where('id', Auth::user()->id)->pluck('name', 'id') : User::where('role', 'tata_usaha')->pluck('name', 'id'))
+                // ->visible(fn ($record) => 
+                //     Auth::user()->role !== 'siswa'
+                // )
+                ->default(Auth::user()->role === 'siswa' ? Auth::user()->id : null)
                 ->required(),
 
             Forms\Components\Textarea::make('catatan')
@@ -213,8 +230,8 @@ class PembayaranSppResource extends Resource
                 'delete' => false,
             ],
             User::ROLE_SISWA => [
-                'viewAny' => false,
-                'create' => false,
+                'viewAny' => true,
+                'create' => true,
                 'edit' => false,
                 'delete' => false,
             ],

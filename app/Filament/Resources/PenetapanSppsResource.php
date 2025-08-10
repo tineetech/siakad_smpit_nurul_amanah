@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use app\Models\User;
+use Filament\Tables\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,11 +24,19 @@ class PenetapanSppsResource extends Resource
 {
     protected static ?string $model = PenetapanSpps::class;
 
-    protected static ?string $navigationGroup = 'POS SPP';
+    protected static ?string $navigationGroup = 'POS Pembayaran';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $label = 'Penetapan SPP';
-    protected static ?string $pluralLabel = 'Penetapan SPP';
+    protected static ?string $label = 'Penetapan Pembayaran';
+    protected static ?string $pluralLabel = 'Penetapan Pembayaran';
+    
+    public static function getNavigationLabel(): string
+    {
+        if (Auth::user()->role === 'siswa') {
+            return 'Tagihan';
+        }
+        return 'Penetapan Pembayaran';
+    }
 
     public static function form(Form $form): Form
     {
@@ -42,7 +51,7 @@ class PenetapanSppsResource extends Resource
                     ->placeholder('Pilih satu atau lebih siswa')
                     ->visible(fn (Page $livewire) => $livewire instanceof \App\Filament\Resources\PenetapanSppsResource\Pages\CreatePenetapanSpps),
                 Forms\Components\Select::make('pengaturan_spp_ids')
-                    ->label('Pengaturan SPP')
+                    ->label('Pengaturan Pembayaran')
                     ->multiple()
                     ->options(PengaturanSpp::pluck('nama', 'id'))
                     ->searchable()
@@ -84,7 +93,7 @@ class PenetapanSppsResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('siswa.nama_lengkap')->label('Siswa'),
-                Tables\Columns\TextColumn::make('pengaturanSpp.nama')->label('Nama SPP'),
+                Tables\Columns\TextColumn::make('pengaturanSpp.nama')->label('Nama Tagihan'),
                 Tables\Columns\TextColumn::make('status')->label('Status')->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'sebagian_dibayar' => 'warning',
@@ -95,7 +104,17 @@ class PenetapanSppsResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal_jatuh_tempo')->date(),
                 Tables\Columns\TextColumn::make('created_at')->since(),
             ])
-            ->actions([
+            ->actions([                
+                Action::make('buatPembayaran')
+                    ->label('Bayar')
+                    ->icon('heroicon-o-plus')
+                    ->color('success')
+                    ->visible(fn ($record) => 
+                        in_array($record->status, ['belum_dibayar'])
+                    )
+                    ->url(fn ($record) => '/siakad/pembayaran-spps/create?penetapan_id=' . $record->id . '&siswa_id=' . $record->siswa_id
+                    )
+                    ->openUrlInNewTab(false),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -108,19 +127,36 @@ class PenetapanSppsResource extends Resource
                                 ->pluck('nama_lengkap', 'id');
                         }
                         return Siswa::query()->pluck('nama_lengkap', 'id');
-                    })
-                    ->default($user->isSiswa() ? $user->id : null),
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $user = Auth::user();
+        $query = parent::getEloquentQuery();
+
+        if ($user->role === 'siswa') {
+            $siswa = Siswa::where('user_id', $user->id)->first();
+            if ($siswa) {
+                $query->where('siswa_id', $siswa->id);
+            }
+        }
+
+        return $query;
+    }
+
+
+
     public static function getRelations(): array
     {
         return [];
     }
 
+    
     public static function getPages(): array
     {
         return [
@@ -163,6 +199,8 @@ class PenetapanSppsResource extends Resource
             ->send();
     }
     
+    
+
     public static function canViewAny(): bool
     {
         return self::getCurrentUserRolePermissions('viewAny');

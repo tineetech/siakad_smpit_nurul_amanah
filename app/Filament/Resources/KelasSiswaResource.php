@@ -147,7 +147,7 @@ class KelasSiswaResource extends Resource
     
         if ($user->isGuru()) {
             $guru = Guru::where('user_id', $user->id)->first();
-            if (!$guru->kelas_id) {
+            if (empty($guru->kelas_id)) {
                 return false;
             }
             return true;

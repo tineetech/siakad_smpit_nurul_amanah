@@ -25,7 +25,7 @@ Route::prefix('spmb')->group(function() {
 
 Route::prefix('api')->group(function() {
     Route::get('/gelombang', function () {
-        return Gelombang::select('id', 'nama')->orderBy('tanggal_mulai', 'desc')->get();
+        return Gelombang::select('id', 'nama', 'tanggal_mulai', 'tanggal_berakhir')->whereColumn('kouta_terisi', '<', 'kouta')->orderBy('tanggal_mulai', 'desc')->get();
     })->name('api.gelombang');
 
     // pengumuman route
@@ -34,9 +34,7 @@ Route::prefix('api')->group(function() {
 });
 
 
-
 Route::get('/jadwal', function () {
-    // Dummy Data untuk Kelas, Semester, Mata Pelajaran, Guru
     $kelasDummy = (object)[
         'id' => 1,
         'nama' => 'Kelas X MIPA 1'
@@ -62,80 +60,42 @@ Route::get('/jadwal', function () {
         3 => (object)['id' => 3, 'nama' => 'Joko Susilo'],
     ];
 
-    // Dummy Jadwal Pelajaran (meniru struktur relasi eager loading)
+    // Jadwal dalam bentuk array biasa
     $jadwalDummy = [
         [
-            'hari' => 'Senin',
+            'hari' => 1, // pakai angka biar cocok dengan mapping di blade
             'jam_mulai' => '07:30',
             'jam_selesai' => '09:00',
-            'kelas_id' => 1,
-            'mata_pelajaran_id' => 1,
-            'guru_id' => 1,
-            'semester_id' => 1,
-            'kurikulum_id' => 1,
             'mataPelajaran' => $mataPelajaranDummy[1],
             'guru' => $guruDummy[1],
-            'semester' => $semesterDummy,
         ],
         [
-            'hari' => 'Senin',
+            'hari' => 1,
             'jam_mulai' => '09:15',
             'jam_selesai' => '10:45',
-            'kelas_id' => 1,
-            'mata_pelajaran_id' => 2,
-            'guru_id' => 2,
-            'semester_id' => 1,
-            'kurikulum_id' => 1,
             'mataPelajaran' => $mataPelajaranDummy[2],
             'guru' => $guruDummy[2],
-            'semester' => $semesterDummy,
         ],
-        // Hanya ada satu jadwal di hari Selasa
         [
-            'hari' => 'Selasa',
+            'hari' => 2,
             'jam_mulai' => '08:00',
             'jam_selesai' => '09:30',
-            'kelas_id' => 1,
-            'mata_pelajaran_id' => 3,
-            'guru_id' => 3,
-            'semester_id' => 1,
-            'kurikulum_id' => 1,
             'mataPelajaran' => $mataPelajaranDummy[3],
             'guru' => $guruDummy[3],
-            'semester' => $semesterDummy,
         ],
-        // Hari Rabu tidak ada jadwal sama sekali
         [
-            'hari' => 'Kamis',
+            'hari' => 4,
             'jam_mulai' => '10:00',
             'jam_selesai' => '11:30',
-            'kelas_id' => 1,
-            'mata_pelajaran_id' => 4,
-            'guru_id' => 1,
-            'semester_id' => 1,
-            'kurikulum_id' => 1,
             'mataPelajaran' => $mataPelajaranDummy[4],
             'guru' => $guruDummy[1],
-            'semester' => $semesterDummy,
         ],
-        [
-            'hari' => 'Jumat',
-            'jam_mulai' => '08:00',
-            'jam_selesai' => '09:30',
-            'kelas_id' => 1,
-            'mata_pelajaran_id' => 5,
-            'guru_id' => 2,
-            'semester_id' => 1,
-            'kurikulum_id' => 1,
-            'mataPelajaran' => $mataPelajaranDummy[5],
-            'guru' => $guruDummy[2],
-            'semester' => $semesterDummy,
-        ],
-        // Hari Sabtu tidak ada jadwal
     ];
 
-    // Konversi dummy jadwal menjadi Collection agar bisa menggunakan groupBy
-    $jadwalCollection = new Collection($jadwalDummy);
+    // 🔹 Ubah semua item array menjadi object
+    $jadwalCollection = collect($jadwalDummy)->map(function ($item) {
+        return (object)$item;
+    });
 
     $data = [
         'kelas' => $kelasDummy,
@@ -145,19 +105,11 @@ Route::get('/jadwal', function () {
 
     $pdf = Pdf::loadView('jadwal-pdf', $data);
 
-    // Untuk melihat langsung di browser (bukan download)
-    // return $pdf->stream('jadwal-kelas-dummy.pdf');
-
-    // Untuk mengunduh file
     return response()->streamDownload(function () use ($pdf) {
         echo $pdf->output();
     }, 'jadwal-kelas-dummy.pdf');
-    // return view('jadwal-pdf', $data);
-})->name('export-jadwal-dummy');
+});
 
 Route::get('/export/raport', [\App\Http\Controllers\RaportExportController::class, 'export'])->name('export.raport');
-
-
-
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 

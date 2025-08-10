@@ -118,15 +118,15 @@ class NilaiResource extends Resource
                     ->searchable(),
                 TextColumn::make('nilai_harian')
                     ->label('Nilai Harian')
-                    ->formatStateUsing(fn (string $state): string => "{$state}%"), // Menambahkan %
+                    ->formatStateUsing(fn (string $state): string => (int) "{$state}"), // Menambahkan 
                 TextColumn::make('nilai_pas')
                     ->label('Nilai PAS')
-                    ->formatStateUsing(fn (string $state): string => "{$state}%"),
+                    ->formatStateUsing(fn (string $state): string => (int) "{$state}"),
                 TextColumn::make('nilai_akhir')
                     ->label('Nilai Akhir')
-                    ->formatStateUsing(fn (string $state): string => "{$state}%"),
+                    ->formatStateUsing(fn (string $state): string => (int) "{$state}"),
                 TextColumn::make('keterangan')
-                    ->label('UAS'),
+                    ->label('Keterangan'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('semester_id')
@@ -175,15 +175,15 @@ class NilaiResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         /** @var \App\Models\User $user */
-        $user = Auth::user();
+        // $user = Auth::user();
     
-        if ($user->isGuru()) {
-            $guru = Guru::where('user_id', $user->id)->first();
-            if (!$guru->kelas_id) {
-                return false;
-            }
-            return true;
-        }
+        // if ($user->isGuru()) {
+        //     $guru = Guru::where('user_id', $user->id)->first();
+        //     if (!$guru->kelas_id) {
+        //         return false;
+        //     }
+        //     return true;
+        // }
         return true;
     }
 

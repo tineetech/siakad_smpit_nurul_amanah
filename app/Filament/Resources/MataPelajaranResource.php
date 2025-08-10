@@ -63,6 +63,11 @@ class MataPelajaranResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Kode'),
+                Tables\Columns\TextColumn::make('gurus.nama_lengkap')
+                    ->searchable()
+                    ->default('-')
+                    ->sortable()
+                    ->label('Guru'),
                 Tables\Columns\TextColumn::make('jenis')
                     ->searchable()
                     ->sortable()

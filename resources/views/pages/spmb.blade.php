@@ -54,13 +54,13 @@
                 {{-- NIK --}}
                 <div>
                     <label class="block text-sm font-medium">NIK <span class="text-red-500">*</span></label>
-                    <input type="text" name="nik" required placeholder="NIK Siswa.." maxlength="16" minlength="16"  class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="nik" required placeholder="NIK Siswa.." maxlength="16" minlength="16"  class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- NISN --}}
                 <div>
                     <label class="block text-sm font-medium">NISN <span class="text-red-500">*</span></label>
-                    <input type="text" name="nisn" required placeholder="NISN" maxlength="10" minlength="10" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="nisn" required placeholder="NISN" maxlength="10" minlength="10" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Nama Lengkap --}}
@@ -112,13 +112,13 @@
                 {{-- Anak Ke --}}
                 <div>
                     <label class="block text-sm font-medium">Anak Ke- <span class="text-red-500">*</span></label>
-                    <input type="text" name="anak_ke" required placeholder="Anak Ke-" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="anak_ke" required placeholder="Anak Ke-" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Jumlah Saudara --}}
                 <div>
                     <label class="block text-sm font-medium">Jumlah Saudara Kandung <span class="text-red-500">*</span></label>
-                    <input type="text" name="jumlah_saudara" required placeholder="Jumlah Saudara Kandung" class="w-full bg-white shadow-sm border p-2 rounded">
+                    <input type="number" name="jumlah_saudara" required placeholder="Jumlah Saudara Kandung" class="w-full bg-white shadow-sm border p-2 rounded">
                 </div>
 
                 {{-- Cita-cita --}}
@@ -183,124 +183,124 @@
                 </div>
             </div>
 
-            <h2 class="text-lg font-semibold mt-8">Data Ayah</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm">Nama Ayah <span class="text-red-500">*</span></label>
-                    <input type="text" name="nama_ayah" required placeholder="Nama Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
+                {{-- <h2 class="text-lg font-semibold mt-8">Data Ayah</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm">Nama Ayah <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_ayah" required placeholder="Nama Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Status Ayah <span class="text-red-500">*</span></label>
+                        <select name="status_ayah" id="status_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
+                            <option value="" disabled selected>Pilih Status</option>
+                            <option value="hidup">Hidup</option>
+                            <option value="meninggal">Meninggal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Tempat Lahir Ayah <span class="text-red-500">*</span></label>
+                        <input type="text" name="tempat_lahir_ayah" required placeholder="Tempat Lahir Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Tanggal Lahir Ayah <span class="text-red-500">*</span></label>
+                        <input type="date" name="tanggal_lahir_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Pendidikan Terakhir Ayah <span class="text-red-500">*</span></label>
+                        <select name="pendidikan_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
+                            <option value="" disabled selected>Pilih Pendidikan</option>
+                            <option value="SD">SD</option>
+                            <option value="SMP">SMP</option>
+                            <option value="SMA/SMK">SMA/SMK</option>
+                            <option value="D1">D1</option>
+                            <option value="D2">D2</option>
+                            <option value="D3">D3</option>
+                            <option value="S1">S1</option>
+                            <option value="S2">S2</option>
+                            <option value="S3">S3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Pekerjaan Ayah <span class="text-red-500">*</span></label>
+                        <input type="text" name="pekerjaan_ayah" required placeholder="Pekerjaan Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Penghasilan Bulanan Ayah <span class="text-red-500">*</span></label>
+                        <select name="penghasilan_ayah" id="penghasilan_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
+                            <option value="" disabled selected>Pilih Penghasilan</option>
+                            <option value="< 1 Juta">&lt; 1 Juta</option>
+                            <option value="1 Juta - 2 Juta">1 Juta - 2 Juta</option>
+                            <option value="2 Juta - 5 Juta">2 Juta - 5 Juta</option>
+                            <option value="5 Juta - 10 Juta">5 Juta - 10 Juta</option>
+                            <option value="> 10 Juta">&gt; 10 Juta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Nomor HP Ayah <span class="text-red-500">*</span></label>
+                        <input type="number" name="nomor_hp_ayah" maxlength="15" required placeholder="Nomor HP Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm">Status Ayah <span class="text-red-500">*</span></label>
-                    <select name="status_ayah" id="status_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
-                        <option value="" disabled selected>Pilih Status</option>
-                        <option value="hidup">Hidup</option>
-                        <option value="meninggal">Meninggal</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm">Tempat Lahir Ayah <span class="text-red-500">*</span></label>
-                    <input type="text" name="tempat_lahir_ayah" required placeholder="Tempat Lahir Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Tanggal Lahir Ayah <span class="text-red-500">*</span></label>
-                    <input type="date" name="tanggal_lahir_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Pendidikan Terakhir Ayah <span class="text-red-500">*</span></label>
-                    <select name="pendidikan_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
-                        <option value="" disabled selected>Pilih Pendidikan</option>
-                        <option value="SD">SD</option>
-                        <option value="SMP">SMP</option>
-                        <option value="SMA/SMK">SMA/SMK</option>
-                        <option value="D1">D1</option>
-                        <option value="D2">D2</option>
-                        <option value="D3">D3</option>
-                        <option value="S1">S1</option>
-                        <option value="S2">S2</option>
-                        <option value="S3">S3</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm">Pekerjaan Ayah <span class="text-red-500">*</span></label>
-                    <input type="text" name="pekerjaan_ayah" required placeholder="Pekerjaan Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Penghasilan Bulanan Ayah <span class="text-red-500">*</span></label>
-                    <select name="penghasilan_ayah" id="penghasilan_ayah" required class="w-full bg-white shadow-sm border p-2 rounded">
-                        <option value="" disabled selected>Pilih Penghasilan</option>
-                        <option value="< 1 Juta">&lt; 1 Juta</option>
-                        <option value="1 Juta - 2 Juta">1 Juta - 2 Juta</option>
-                        <option value="2 Juta - 5 Juta">2 Juta - 5 Juta</option>
-                        <option value="5 Juta - 10 Juta">5 Juta - 10 Juta</option>
-                        <option value="> 10 Juta">&gt; 10 Juta</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm">Nomor HP Ayah <span class="text-red-500">*</span></label>
-                    <input type="number" name="nomor_hp_ayah" maxlength="15" required placeholder="Nomor HP Ayah" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-            </div>
 
-            <h2 class="text-lg font-semibold mt-8">Data Ibu</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm">Nama Ibu <span class="text-red-500">*</span></label>
-                    <input type="text" name="nama_ibu" required placeholder="Nama Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Status Ibu <span class="text-red-500">*</span></label>
-                    <select name="status_ibu" id="status_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
-                        <option value="" disabled selected>Pilih Status</option>
-                        <option value="hidup">Hidup</option>
-                        <option value="meninggal">Meninggal</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm">Tempat Lahir Ibu <span class="text-red-500">*</span></label>
-                    <input type="text" name="tempat_lahir_ibu" required placeholder="Tempat Lahir Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Tanggal Lahir Ibu <span class="text-red-500">*</span></label>
-                    <input type="date" name="tanggal_lahir_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Pendidikan Terakhir Ibu <span class="text-red-500">*</span></label>
-                    <select name="pendidikan_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
-                        <option value="" disabled selected>Pilih Pendidikan</option>
-                        <option value="SD">SD</option>
-                        <option value="SMP">SMP</option>
-                        <option value="SMA/SMK">SMA/SMK</option>
-                        <option value="D1">D1</option>
-                        <option value="D2">D2</option>
-                        <option value="D3">D3</option>
-                        <option value="S1">S1</option>
-                        <option value="S2">S2</option>
-                        <option value="S3">S3</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm">Pekerjaan Ibu <span class="text-red-500">*</span></label>
-                    <input type="text" name="pekerjaan_ibu" required placeholder="Pekerjaan Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Penghasilan Bulanan Ibu <span class="text-red-500">*</span></label>
-                    <select name="penghasilan_ibu" id="penghasilan_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
-                        <option value="" disabled selected>Pilih Penghasilan</option>
-                        <option value="< 1 Juta">&lt; 1 Juta</option>
-                        <option value="1 Juta - 2 Juta">1 Juta - 2 Juta</option>
-                        <option value="2 Juta - 5 Juta">2 Juta - 5 Juta</option>
-                        <option value="5 Juta - 10 Juta">5 Juta - 10 Juta</option>
-                        <option value="> 10 Juta">&gt; 10 Juta</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm">Nomor HP Ibu <span class="text-red-500">*</span></label>
-                    <input type="number" name="nomor_hp_ibu" maxlength="15" required placeholder="Nomor HP Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
-                </div>
-            </div>
+                <h2 class="text-lg font-semibold mt-8">Data Ibu</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm">Nama Ibu <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_ibu" required placeholder="Nama Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Status Ibu <span class="text-red-500">*</span></label>
+                        <select name="status_ibu" id="status_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
+                            <option value="" disabled selected>Pilih Status</option>
+                            <option value="hidup">Hidup</option>
+                            <option value="meninggal">Meninggal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Tempat Lahir Ibu <span class="text-red-500">*</span></label>
+                        <input type="text" name="tempat_lahir_ibu" required placeholder="Tempat Lahir Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Tanggal Lahir Ibu <span class="text-red-500">*</span></label>
+                        <input type="date" name="tanggal_lahir_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Pendidikan Terakhir Ibu <span class="text-red-500">*</span></label>
+                        <select name="pendidikan_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
+                            <option value="" disabled selected>Pilih Pendidikan</option>
+                            <option value="SD">SD</option>
+                            <option value="SMP">SMP</option>
+                            <option value="SMA/SMK">SMA/SMK</option>
+                            <option value="D1">D1</option>
+                            <option value="D2">D2</option>
+                            <option value="D3">D3</option>
+                            <option value="S1">S1</option>
+                            <option value="S2">S2</option>
+                            <option value="S3">S3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Pekerjaan Ibu <span class="text-red-500">*</span></label>
+                        <input type="text" name="pekerjaan_ibu" required placeholder="Pekerjaan Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm">Penghasilan Bulanan Ibu <span class="text-red-500">*</span></label>
+                        <select name="penghasilan_ibu" id="penghasilan_ibu" required class="w-full bg-white shadow-sm border p-2 rounded">
+                            <option value="" disabled selected>Pilih Penghasilan</option>
+                            <option value="< 1 Juta">&lt; 1 Juta</option>
+                            <option value="1 Juta - 2 Juta">1 Juta - 2 Juta</option>
+                            <option value="2 Juta - 5 Juta">2 Juta - 5 Juta</option>
+                            <option value="5 Juta - 10 Juta">5 Juta - 10 Juta</option>
+                            <option value="> 10 Juta">&gt; 10 Juta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Nomor HP Ibu <span class="text-red-500">*</span></label>
+                        <input type="number" name="nomor_hp_ibu" maxlength="15" required placeholder="Nomor HP Ibu" class="w-full bg-white shadow-sm border p-2 rounded">
+                    </div>
+                </div> --}}
 
             <button type="submit" class="w-full mt-6 bg-yellow-500 text-white px-4 py-3 rounded hover:bg-yellow-600">
-                Kirim Pendaftaran
+                Simpan Pendaftaran
             </button>
         </form>
     </main>
@@ -314,7 +314,7 @@
                     dataType: 'json',
                     delay: 250,
                     processResults: data => ({
-                        results: data.map(g => ({ id: g.id, text: g.nama }))
+                        results: data.map(g => ({ id: g.id, text: `${g.nama} (${g.tanggal_mulai} - ${g.tanggal_berakhir})` }))
                     }),
                     cache: true
                 }

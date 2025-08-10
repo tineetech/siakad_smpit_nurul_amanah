@@ -11,10 +11,20 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\HtmlString;
 use Filament\Notifications\Notification;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Auth;
 
 class ListPenetapanSpps extends ListRecords
 {
     protected static string $resource = PenetapanSppsResource::class;
+
+    public function getTitle(): string | Htmlable
+    {
+        if (Auth::user()->role === 'siswa') {
+            return 'Tagihan';
+        }
+        return 'Penetapan Pembayaran';
+    }
 
     protected function getHeaderActions(): array
     {
@@ -23,6 +33,7 @@ class ListPenetapanSpps extends ListRecords
                 ->label('Export')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
+                ->visible(fn ($record) => Auth::user()->role === 'admin')
                 ->action(fn () => Excel::download(new PenetapanSppExport, 'penetapan_spp.xlsx')),
 
             // Actions\Action::make('import')
@@ -48,7 +59,7 @@ class ListPenetapanSpps extends ListRecords
             //         }
             //     }),
 
-            Actions\CreateAction::make()->label('Tambah Data Penetapan SPP'),
+            Actions\CreateAction::make()->label('Tambah Data Penetapan Pembayaran'),
         ];
     }
 }

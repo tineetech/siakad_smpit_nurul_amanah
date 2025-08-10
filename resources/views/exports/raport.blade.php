@@ -11,13 +11,30 @@
     </style>
 </head>
 <body>
-    <h3>Pesantren Terpadu Nurul Amanah</h3>
-    <h4>LAPORAN HASIL BELAJAR</h4>
+    <table style="width: 100%;border:none !important;" border="0">
+        <tr>
+            <td style="border:none !important;width: 60px; text-align: center;">
+                <img src="{{ public_path('images/pp/logo-smp.png') }}" style="width: 60px; height: 60px;">
+            </td>
+            <td style="text-align: center;border:none !important;">
+                <h3>Pesantren Terpadu Nurul Amanah</h3>
+                <h4>LAPORAN HASIL BELAJAR</h4>
+            </td>
+        </tr>
+    </table>
+    
+    {{-- <div style="display: flex;background:red">
+        <img src="{{ public_path('images/pp/logo-smp.png') }}" style="width: 60px; height: 60px;background:yellow">
+        <div style="width: 200px;background:blue">
+            <h3>Pesantren Terpadu Nurul Amanah</h3>
+            <h4>LAPORAN HASIL BELAJAR</h4>
+        </div>
+    </div> --}}
 
     <div style="display: flex;">
         <div style="width: 75%; display: inline-block; vertical-align: top;">
             <p>Nama : {{ $siswa->nama_lengkap }}</p>
-            <p>TTL : {{ $siswa->tempat_lahir . "/" . $siswa->tanggal_lahir ?? '-' }}</p>
+            <p>TTL : {{ $siswa->tempat_lahir . ' / ' . \Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d F Y') }}</p>
             <p>Jenis Kelamin : {{ $siswa->jenis_kelamin ?? '-' }}</p>
             <p>NISN : {{ $siswa->nisn ?? '-' }}</p>
         </div>
@@ -61,5 +78,30 @@
             @endforeach
         </tbody>
     </table>
+    <br><br><br>
+    <table style="width: 100%; border: none; text-align: center;">
+        <tr>
+            <td style="border:none;">
+                <p>Orang Tua/Wali</p>
+                <br><br><br><br>
+                <p style="text-decoration: underline; margin: 0;">Nama Orang Tua</p>
+                {{-- <p>Orang tua dari: {{ $siswa->nama_lengkap ?? '-' }}</p> --}}
+            </td>
+            <td style="border:none;">
+                <p>Wali Kelas</p>
+                <br><br><br><br>
+                <p style="text-decoration: underline; margin: 0;">{{ $waliKelas->nama ?? 'Nama Wali Kelas' }}</p>
+                <p>NIP: {{ $waliKelas->nip ?? '-' }}</p>
+            </td>
+            <td style="border:none;">
+                <p>Tasik Garut, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                <p>Kepala Sekolah</p>
+                <br><br><br><br>
+                <p style="text-decoration: underline; margin: 0;">{{ $kepalaSekolah->nama ?? 'Nama Kepala Sekolah' }}</p>
+                <p>NIP: {{ $kepalaSekolah->nip ?? '-' }}</p>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>
