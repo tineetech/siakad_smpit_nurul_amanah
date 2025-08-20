@@ -20,6 +20,7 @@ class Nilai extends Model
         'nilai_harian',
         'nilai_pas',
         'nilai_akhir',
+        'nilai_kkm',
         'keterangan',
     ];
 

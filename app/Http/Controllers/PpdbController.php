@@ -17,17 +17,45 @@ class PpdbController extends Controller
 
     public function store(Request $request)
     {
+        // $validated = $request->validate([
+        //     'gelombang_id' => 'required|exists:gelombang,id',
+        //     'nik' => 'required|unique:calon_siswa,nik',
+        //     'nama_lengkap' => 'required|string|max:255',
+        //     'jenis_kelamin' => 'required|in:laki-laki,perempuan',
+        //     // Validasi untuk file
+        //     'profile_picture' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Max 2MB
+        //     'kartu_keluarga' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
+        //     'akta_kelahiran' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
+        //     'surat_kelulusan' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
+        // ]);
+
         $validated = $request->validate([
             'gelombang_id' => 'required|exists:gelombang,id',
             'nik' => 'required|unique:calon_siswa,nik',
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:laki-laki,perempuan',
-            // Validasi untuk file
-            'profile_picture' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Max 2MB
-            'kartu_keluarga' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
-            'akta_kelahiran' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
-            'surat_kelulusan' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:5120'], // Max 5MB
+            'profile_picture' => ['required','image','mimes:jpeg,png,jpg,gif','max:2048'],
+            'kartu_keluarga' => ['required','file','mimes:jpeg,png,jpg,gif,pdf','max:5120'],
+            'akta_kelahiran' => ['required','file','mimes:jpeg,png,jpg,gif,pdf','max:5120'],
+            'surat_kelulusan' => ['required','file','mimes:jpeg,png,jpg,gif,pdf','max:5120'],
+        ], [
+            // Pesan custom
+            'gelombang_id.required' => 'Gelombang harus dipilih.',
+            'gelombang_id.exists' => 'Gelombang tidak ditemukan.',
+            'nik.required' => 'NIK wajib diisi.',
+            'nik.unique' => 'NIK sudah terdaftar.',
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
+            'jenis_kelamin.in' => 'Jenis kelamin harus Laki-laki atau Perempuan.',
+            'profile_picture.required' => 'Foto profil wajib diupload.',
+            'profile_picture.image' => 'Foto profil harus berupa gambar.',
+            'profile_picture.mimes' => 'Foto profil harus berformat jpeg, png, jpg, atau gif.',
+            'profile_picture.max' => 'Ukuran foto profil maksimal 2MB.',
+            'kartu_keluarga.required' => 'Kartu Keluarga wajib diupload.',
+            'akta_kelahiran.required' => 'Akta kelahiran wajib diupload.',
+            'surat_kelulusan.required' => 'Surat kelulusan wajib diupload.',
         ]);
+
 
         $nisnEmpat = substr(preg_replace('/\D/', '', $request->nisn), 0, 4); // hanya ambil angka, 4 digit awal
         $tahun = now()->format('Y');

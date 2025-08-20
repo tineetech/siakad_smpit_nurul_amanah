@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     use Notifiable;
 
@@ -19,7 +20,7 @@ class User extends Authenticatable
     const ROLE_KEPSEK = 'kepala_sekolah';
 
     protected $table = 'users';
-
+    
     protected $fillable = [
         'id',
         'name',

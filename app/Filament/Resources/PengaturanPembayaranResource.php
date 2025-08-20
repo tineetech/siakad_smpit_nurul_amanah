@@ -22,7 +22,7 @@ class PengaturanPembayaranResource extends Resource
     protected static ?string $model = PengaturanSpp::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'POS Pembayaran';
+    protected static ?string $navigationGroup = 'Pembayaran';
     protected static ?string $navigationLabel = 'Pengaturan Pembayaran';
     protected static ?int $navigationSort = 1;
 

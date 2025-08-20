@@ -28,8 +28,6 @@ class LaporanNilaiSiswaResource extends Resource
     protected static ?string $navigationGroup = 'Kesiswaan'; 
     protected static ?string $navigationLabel = 'Raport';
 
-    // Kita tidak akan menggunakan form untuk membuat/mengedit nilai di resource ini
-    // karena fokusnya adalah laporan. Kita bisa membiarkannya kosong atau menghapusnya jika tidak dibutuhkan.
     public static function form(Form $form): Form
     {
         return $form
@@ -56,14 +54,13 @@ class LaporanNilaiSiswaResource extends Resource
                     ->sortable()
                     ->searchable(),
             
-                // Contoh: Menampilkan rata-rata nilai akhir per siswa per semester
                 TextColumn::make('nilai_akhir')
                     ->label('Nilai Akhir')
+                    ->numeric(),
+
+                TextColumn::make('nilai_kkm')
+                    ->label('Nilai KKM')
                     ->numeric()
-                    // ->summarize([
-                    //     Tables\Columns\Summarizers\Average::make()
-                    //         ->label('Rata-rata Kelas') // Ini akan menghitung rata-rata dari kolom nilai_akhir
-                    // ]),
             ])
             ->filters([
                 SelectFilter::make('siswa_id')
@@ -98,7 +95,7 @@ class LaporanNilaiSiswaResource extends Resource
             ->modifyQueryUsing(function (Builder $query) {
                 $query->select('siswa_id', 'semester_id', 'kelas_id')
                     ->selectRaw('AVG(nilai_akhir) as nilai_akhir')
-                    // Tambahkan ini: Ambil ID minimal dari grup untuk dijadikan kunci record
+                    ->selectRaw('AVG(nilai_kkm) as nilai_kkm')
                     ->addSelect(\DB::raw('MIN(id) as id'))
                     ->groupBy('siswa_id', 'semester_id', 'kelas_id');
             })

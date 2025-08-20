@@ -39,8 +39,8 @@ class EditProfile extends BaseEditProfile
                     ->placeholder('Alamat..')
                     ->maxLength(255),
                     
-                $this->getPasswordFormComponent(),
-                $this->getPasswordConfirmationFormComponent(),
+                // $this->getPasswordFormComponent(),
+                // $this->getPasswordConfirmationFormComponent(),
             ]);
     }
 }

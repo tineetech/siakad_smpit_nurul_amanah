@@ -37,12 +37,12 @@ class KelasResource extends Resource
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->label('Nama Kelas')
-                    ->placeholder('Contoh: X IPA 1, XI IPS 2'),
+                    ->placeholder('Contoh: VII A, VII B'),
                 Forms\Components\TextInput::make('tingkat')
                     ->maxLength(255)
                     ->nullable()
                     ->label('Tingkat')
-                    ->placeholder('Contoh: X, XI, XII'),
+                    ->placeholder('Contoh: VII, VIII, IX'),
                 Forms\Components\TextInput::make('kapasitas')
                     ->numeric()
                     ->default(35)
@@ -64,9 +64,6 @@ class KelasResource extends Resource
                             ->label('Semester Terdaftar')
                             ->options(Semester::pluck('nama', 'id'))
                             ->required()
-                            ->default(function () {
-                                return Semester::where('is_aktif', true)->first()?->id;
-                            })
                             ->helperText('Pilih semester untuk enrollment siswa ini.')
                             ->columnSpanFull(),
 

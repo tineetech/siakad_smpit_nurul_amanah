@@ -35,63 +35,151 @@ class NilaiResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('siswa_id')
-                    ->label('Siswa')
-                    ->options(Siswa::all()->pluck('nama_lengkap', 'id'))
-                    ->searchable()
-                    ->required()
-                    ->reactive()
-                   ->afterStateUpdated(function (Set $set, $state) {
-                        $siswa = \App\Models\Siswa::find($state);
-                        $set('kelas_id', $siswa?->kelas_id);
-                    }),
-                Select::make('kelas_id')
-                    ->label('Kelas')
-                    ->placeholder('Akan terisi otomatis')
-                    ->disabled()
-                    ->dehydrated(true)
-                    ->options(Kelas::all()->pluck('nama', 'id'))
-                    ->required(),
                 Select::make('semester_id')
-                    ->label('Semester')
-                    ->options(Semester::all()->pluck('nama', 'id'))
-                    ->searchable()
-                    ->required(),
-                Select::make('mata_pelajaran_id')
+            ->label('Semester')
+            ->options(Semester::pluck('nama', 'id'))
+            ->required()
+            ->reactive()
+            ->afterStateUpdated(function (Set $set, $state, callable $get) {
+                $semesterId = $get('semester_id');
+                if (!$semesterId || !$state) {
+                    $set('mapel_nilai', []);
+                    return;
+                }
+
+                $siswa = Siswa::find($get('siswa_id'));
+                if (!$siswa) {
+                    $set('mapel_nilai', []);
+                    return;
+                }
+
+                // Ambil semua mapel dari jadwal kelas siswa
+                $mapelList = \App\Models\JadwalPelajaran::where('kelas_id', $siswa->kelas_id)
+                    // ->where('semester_id', $semesterId)
+                    ->with('mataPelajaran')
+                    ->get();
+
+                // Ambil mapel yang sudah punya nilai
+                $mapelSudahAda = \App\Models\Nilai::where('siswa_id', $siswa->id)
+                    ->where('semester_id', $semesterId)
+                    ->pluck('mata_pelajaran_id')
+                    ->toArray();
+
+                // Filter mapel yang belum ada nilainya
+                $mapelBelumAda = $mapelList->filter(function ($jadwal) use ($mapelSudahAda) {
+                    return !in_array($jadwal->mata_pelajaran_id, $mapelSudahAda);
+                });
+
+                // Set repeater data awal
+                $set('mapel_nilai', $mapelBelumAda->map(function ($jadwal) {
+                    return [
+                        'mata_pelajaran_id' => $jadwal->mata_pelajaran_id,
+                        'mata_pelajaran_nama' => $jadwal->mataPelajaran->nama,
+                    ];
+                })->values()->toArray());
+            }),
+
+        Select::make('siswa_id')
+            ->label('Siswa')
+            ->options(Siswa::pluck('nama_lengkap', 'id'))
+            ->required()
+            ->reactive()
+            ->afterStateUpdated(function (Set $set, $state, callable $get) {
+                $semesterId = $get('semester_id');
+                if (!$semesterId || !$state) {
+                    $set('mapel_nilai', []);
+                    return;
+                }
+
+                $siswa = Siswa::find($state);
+                if (!$siswa) {
+                    $set('mapel_nilai', []);
+                    return;
+                }
+
+                // Ambil semua mapel dari jadwal kelas siswa
+                $mapelList = \App\Models\JadwalPelajaran::where('kelas_id', $siswa->kelas_id)
+                    // ->where('semester_id', $semesterId)
+                    ->with('mataPelajaran')
+                    ->get();
+
+                // Ambil mapel yang sudah punya nilai
+                $mapelSudahAda = \App\Models\Nilai::where('siswa_id', $siswa->id)
+                    ->where('semester_id', $semesterId)
+                    ->pluck('mata_pelajaran_id')
+                    ->toArray();
+
+                // Filter mapel yang belum ada nilainya
+                $mapelBelumAda = $mapelList->filter(function ($jadwal) use ($mapelSudahAda) {
+                    return !in_array($jadwal->mata_pelajaran_id, $mapelSudahAda);
+                });
+
+                // Set repeater data awal
+                $set('mapel_nilai', $mapelBelumAda->map(function ($jadwal) {
+                    return [
+                        'mata_pelajaran_id' => $jadwal->mata_pelajaran_id,
+                        'mata_pelajaran_nama' => $jadwal->mataPelajaran->nama,
+                    ];
+                })->values()->toArray());
+            }),
+
+            Forms\Components\Repeater::make('mapel_nilai')
+            ->label('Nilai Mapel')
+            ->schema([
+                Forms\Components\TextInput::make('mata_pelajaran_nama')
                     ->label('Mata Pelajaran')
-                    ->options(MataPelajaran::where('jenis', 'kepesantrenan')->get()->pluck('nama', 'id'))
-                    ->searchable()
-                    ->required(),
-                TextInput::make('nilai_harian')
-                    ->label('Nilai Harian')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->inputMode('decimal')
-                    ->suffix('%') // Opsional: Tambahkan persentase
-                    ->step(0.01) // Memungkinkan input desimal dua angka
-                    ->nullable(),
-                TextInput::make('nilai_pas')
-                    ->label('Nilai PAS')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->inputMode('decimal')
-                    ->suffix('%')
-                    ->step(0.01)
-                    ->nullable(),
-                TextInput::make('nilai_akhir')
-                    ->label('Nilai AKHIR')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->inputMode('decimal')
-                    ->suffix('%')
-                    ->step(0.01)
-                    ->nullable(),
-                TextInput::make('keterangan')
-                    ->label('Keterangan')
-                    ->nullable(),
+                    ->disabled()
+                    ->columnSpan(2),
+                Forms\Components\TextInput::make('nilai_harian')
+                    ->numeric()->minValue(1)->maxValue(100)
+                    ->columnSpan(1),
+                Forms\Components\TextInput::make('nilai_pas')
+                    ->numeric()->minValue(1)->maxValue(100)
+                    ->columnSpan(1),
+                Forms\Components\TextInput::make('nilai_akhir')
+                    ->numeric()->minValue(1)->maxValue(100)
+                    ->columnSpan(1),
+                Forms\Components\TextInput::make('nilai_kkm')
+                    ->numeric()->minValue(1)->maxValue(100)
+                    ->columnSpan(1),
+                Forms\Components\TextInput::make('keterangan')
+                    ->nullable()
+                    ->columnSpan(2),
+            ])
+            ->deletable(false)
+            ->columns(8)
+            ->columnSpanFull()
+            ->afterStateHydrated(function ($component, $state, $record) {
+                if (!$record) return; // hanya untuk edit
+
+                $siswa = $record->siswa;
+                $semesterId = $record->semester_id;
+
+                // Ambil semua mapel dari jadwal kelas
+                $mapelList = \App\Models\JadwalPelajaran::where('kelas_id', $siswa->kelas_id)
+                    // ->where('semester_id', $semesterId)
+                    ->with('mataPelajaran')
+                    ->get();
+
+                $data = $mapelList->map(function ($jadwal) use ($siswa, $semesterId) {
+                    $nilai = \App\Models\Nilai::where('siswa_id', $siswa->id)
+                        ->where('semester_id', $semesterId)
+                        ->where('mata_pelajaran_id', $jadwal->mata_pelajaran_id)
+                        ->first();
+
+                    return [
+                        'mata_pelajaran_id' => $jadwal->mata_pelajaran_id,
+                        'mata_pelajaran_nama' => $jadwal->mataPelajaran->nama,
+                        'nilai_harian' => (int) $nilai?->nilai_harian,
+                        'nilai_pas' => (int) $nilai?->nilai_pas,
+                        'nilai_akhir' => (int) $nilai?->nilai_akhir,
+                        'nilai_kkm' => (int) $nilai?->nilai_kkm,
+                        'keterangan' => $nilai?->keterangan,
+                    ];
+                })->toArray();
+
+                $component->state($data);
+            })
             ]);
     }
 
@@ -125,6 +213,9 @@ class NilaiResource extends Resource
                 TextColumn::make('nilai_akhir')
                     ->label('Nilai Akhir')
                     ->formatStateUsing(fn (string $state): string => (int) "{$state}"),
+                TextColumn::make('nilai_kkm')
+                    ->label('Nilai KKM')
+                    ->formatStateUsing(fn (string $state): string => (int) "{$state}"),
                 TextColumn::make('keterangan')
                     ->label('Keterangan'),
             ])
@@ -156,6 +247,7 @@ class NilaiResource extends Resource
             ]);
     }
 
+    
     public static function getRelations(): array
     {
         return [
@@ -270,8 +362,8 @@ class NilaiResource extends Resource
             User::ROLE_ADMIN => [
                 'viewAny' => true,
                 'create' => true,
-                'edit' => false,
-                'delete' => false,
+                'edit' => true,
+                'delete' => true,
             ],
             User::ROLE_TATA_USAHA => [
                 'viewAny' => false,

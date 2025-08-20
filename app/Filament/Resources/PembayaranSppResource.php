@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Auth;
 class PembayaranSppResource extends Resource
 {
     protected static ?string $model = PembayaranSpp::class;
-    protected static ?string $navigationGroup = 'POS Pembayaran';
+    protected static ?string $navigationGroup = 'Pembayaran';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $label = 'Pembayaran';

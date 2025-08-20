@@ -24,7 +24,7 @@ class PenetapanSppsResource extends Resource
 {
     protected static ?string $model = PenetapanSpps::class;
 
-    protected static ?string $navigationGroup = 'POS Pembayaran';
+    protected static ?string $navigationGroup = 'Pembayaran';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $label = 'Penetapan Pembayaran';

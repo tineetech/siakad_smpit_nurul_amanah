@@ -60,6 +60,7 @@ class PengumumanResource extends Resource
                     ->placeholder('Pilih peran yang dituju (opsional)'),
                 DateTimePicker::make('tanggal_publikasi')
                     ->nullable()
+                    ->withoutSeconds()
                     ->default(now()) // Default ke waktu sekarang
                     ->label('Tanggal & Waktu Publikasi')
                     ->placeholder('Pilih tanggal dan waktu publikasi'),
@@ -93,6 +94,7 @@ class PengumumanResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal_publikasi')
                     ->dateTime()
                     ->sortable()
+                    ->dateTime('M d, Y H:i') 
                     ->label('Waktu Publikasi'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

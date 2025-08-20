@@ -78,7 +78,7 @@ class AdminPanelProvider extends PanelProvider
                 'Data Master',        // Ini akan muncul pertama
                 'Kesiswaan', // Ini akan muncul kedua
                 'Absensi',
-                'POS Pembayaran',
+                'Pembayaran',
                 'Portal SPMB',
                 'Pengaturan',
             ])

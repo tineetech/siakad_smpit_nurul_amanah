@@ -62,6 +62,7 @@
                 <th>NH</th>
                 <th>PAS</th>
                 <th>NA</th>
+                <th>KKM</th>
                 <th>Keterangan</th>
             </tr>
         </thead>
@@ -73,13 +74,14 @@
                 <td>{{ $nilai->nilai_harian ?? '-' }}</td>
                 <td>{{ $nilai->nilai_pas ?? '-' }}</td>
                 <td>{{ $nilai->nilai_akhir ?? '-' }}</td>
+                <td>{{ $nilai->nilai_kkm ?? '-' }}</td>
                 <td>{{ $nilai->keterangan ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
     <br><br><br>
-    <table style="width: 100%; border: none; text-align: center;">
+    <table style="width: 100%; border: none; text-align: start;">
         <tr>
             <td style="border:none;">
                 <p>Orang Tua/Wali</p>
@@ -98,7 +100,7 @@
                 <p>Kepala Sekolah</p>
                 <br><br><br><br>
                 <p style="text-decoration: underline; margin: 0;">{{ $kepalaSekolah->nama ?? 'Nama Kepala Sekolah' }}</p>
-                <p>NIP: {{ $kepalaSekolah->nip ?? '-' }}</p>
+                <p>NUPTK: {{ $kepalaSekolah->nip ?? '4137771672130233' }}</p>
             </td>
         </tr>
     </table>
